@@ -5,7 +5,7 @@ import { particle } from '../../../../particle.js'
 import { skin } from '../../../../skin.js'
 import { archetypes } from '../../../index.js'
 import { TraceNote } from './TraceNote.js'
-export class CriticalSlideEndTraceNote extends TraceNote {
+export class CriticalTailTraceNote extends TraceNote {
     sprites = {
         left: skin.sprites.criticalTraceNoteLeft,
         middle: skin.sprites.criticalTraceNoteMiddle,

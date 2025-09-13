@@ -136,4 +136,7 @@ export class Initialization extends Archetype {
         archetypes.InputManager.spawn({})
         this.despawn = true
     }
+    initialize() {
+        archetypes.Stage.spawn({})
+    }
 }

@@ -1,6 +1,6 @@
 import { skin } from '../../skin.js'
 import { archetypes } from '../index.js'
-import { SlideConnector } from './SlideConnector.js'
+import { SlideConnector } from './Guide.js'
 export class NormalSlideConnector extends SlideConnector {
     sprites = {
         normal: skin.sprites.normalSlideConnectorNormal,

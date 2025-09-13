@@ -6,8 +6,8 @@ import { lane } from '../../../../lane.js'
 import { particle } from '../../../../particle.js'
 import { skin } from '../../../../skin.js'
 import { archetypes } from '../../../index.js'
-import { SlideEndNote } from './SlideEndNote.js'
-export class CriticalSlideEndNote extends SlideEndNote {
+import { SlideTailNote } from './SlideTailNote.js'
+export class CriticalTailReleaseNote extends SlideTailNote {
     sprites = {
         left: skin.sprites.criticalNoteLeft,
         middle: skin.sprites.criticalNoteMiddle,

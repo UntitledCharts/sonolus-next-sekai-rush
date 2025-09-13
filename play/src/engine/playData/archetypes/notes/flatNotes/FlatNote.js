@@ -1,4 +1,4 @@
-import { approach } from '../../../../../../../shared/src/engine/data/note.js'
+import { approach, progressTo } from '../../../../../../../shared/src/engine/data/note.js'
 import { perspectiveLayout } from '../../../../../../../shared/src/engine/data/utils.js'
 import { toBucketWindows } from '../../../../../../../shared/src/engine/data/windows.js'
 import { options } from '../../../../configuration/options.js'
@@ -8,11 +8,13 @@ import { note } from '../../../note.js'
 import { circularEffectLayout, linearEffectLayout, particle } from '../../../particle.js'
 import { getZ, layer } from '../../../skin.js'
 import { Note } from '../Note.js'
-
+import { timeToScaledTime, scaledTimeToEarliestTime } from '../../utils.js'
+import { getAttached } from '../slideTickNotes/utils.js'
 export class FlatNote extends Note {
     layer = layer.note.body
-    visualTime = this.entityMemory(Range)
     hiddenTime = this.entityMemory(Number)
+    visualStartTime = this.entityMemory(Number)
+    endTime = this.entityMemory(Number)
     inputTime = this.entityMemory(Range)
     spriteLayouts = this.entityMemory({
         left: Quad,
@@ -27,19 +29,37 @@ export class FlatNote extends Note {
     }
     preprocess() {
         super.preprocess()
-        this.visualTime.copyFrom(
-            Range.l.mul(note.duration).add(timeScaleChanges.at(this.targetTime).scaledTime),
-        )
+        this.endTime = timeToScaledTime(this.targetTime, this.import.timeScaleGroup)
+        this.visualStartTime = this.endTime - note.duration
+        this.sharedMemory.get(this.info.index).startTime = this.visualStartTime
         this.inputTime.copyFrom(this.windows.good.add(this.targetTime).add(input.offset))
-        this.spawnTime = Math.min(
-            this.visualTime.min,
-            timeScaleChanges.at(this.inputTime.min).scaledTime,
+        this.attach()
+        this.startTime = scaledTimeToEarliestTime(
+            Math.min(this.visualStartTime, this.endTime),
+            this.import.timeScaleGroup,
         )
+        this.sharedMemory.get(this.info.index).startTime = this.startTime
         if (this.shouldScheduleSFX) this.scheduleSFX()
     }
+    attach() {
+        if (this.import.isAttached) {
+            if (!this.import.isSeparator) {
+                this.import.connectorEase = this.import.get(this.import.attachHead).connectorEase
+            }
+            ;({ lane: this.import.lane, size: this.import.size } = getAttached(
+                this.import.connectorEase,
+                this.import.get(this.import.attachHead).lane,
+                this.import.get(this.import.attachHead).size,
+                bpmChanges.at(this.import.get(this.import.attachHead).beat).time,
+                this.import.get(this.import.attachTail).lane,
+                this.import.get(this.import.attachTail).size,
+                bpmChanges.at(this.import.get(this.import.attachTail).beat).time,
+                this.inputTime.min,
+            ))
+        }
+    }
     initialize() {
-        if (options.hidden > 0)
-            this.hiddenTime = this.visualTime.max - note.duration * options.hidden
+        if (options.hidden > 0) this.hiddenTime = this.endTime - note.duration * options.hidden
         const l = this.import.lane - this.import.size
         const r = this.import.lane + this.import.size
         getHitbox({ l, r, leniency: 0 }).copyTo(this.hitbox)
@@ -61,8 +81,9 @@ export class FlatNote extends Note {
     updateParallel() {
         if (time.now > this.inputTime.max) this.despawn = true
         if (this.despawn) return
-        if (time.scaled < this.visualTime.min) return
-        if (options.hidden > 0 && time.scaled > this.hiddenTime) return
+        const scaledTime = timeToScaledTime(time.now, this.import.timeScaleGroup)
+        if (scaledTime < this.visualStartTime) return
+        if (options.hidden > 0 && scaledTime > this.hiddenTime) return
         this.render()
     }
     get shouldScheduleSFX() {
@@ -104,7 +125,11 @@ export class FlatNote extends Note {
         }
     }
     render() {
-        this.y = approach(this.visualTime.min, this.visualTime.max, time.scaled)
+        this.y = approach(
+            this.visualStartTime,
+            this.endTime,
+            timeToScaledTime(time.now, this.import.timeScaleGroup),
+        )
         if (this.useFallbackSprites) {
             this.sprites.fallback.draw(this.spriteLayouts.middle.mul(this.y), this.z, 1)
         } else {

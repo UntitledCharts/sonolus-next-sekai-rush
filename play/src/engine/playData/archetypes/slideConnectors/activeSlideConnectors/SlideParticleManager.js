@@ -1,7 +1,7 @@
 import { particle } from '../../../particle'
 import { archetypes } from '../../index'
 export class SlideParticleManager extends SpawnableArchetype({
-    startRef: Number,
+    activeHeadRef: Number,
     function: Number,
 }) {
     updateSequential() {
@@ -22,6 +22,6 @@ export class SlideParticleManager extends SpawnableArchetype({
         }
     }
     get startSharedMemory() {
-        return archetypes.NormalSlideStartNote.sharedMemory.get(this.spawnData.startRef)
+        return archetypes.NormalHeadTapNote.sharedMemory.get(this.spawnData.activeHeadRef)
     }
 }

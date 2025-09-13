@@ -1,0 +1,234 @@
+{
+    "bgmOffset": 0,
+    "entities": [
+        { "archetype": "Initialization", "data": [] },
+        {
+            "archetype": "#BPM_CHANGE",
+            "data": [{ "name": "#BEAT", "value": 0 }, { "name": "#BPM", "value": 60 }]
+        },
+        { "archetype": "#TIMESCALE_GROUP", "data": [{ "name": "first", "ref": "1" }], "name": "0" },
+        {
+            "archetype": "#TIMESCALE_CHANGE",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 3 },
+                { "name": "#TIMESCALE", "value": 0.5 },
+                { "name": "#TIMESCALE_SKIP", "value": 0 },
+                { "name": "#TIMESCALE_EASE", "value": 0 }
+            ],
+            "name": "1"
+        },
+        {
+            "archetype": "NormalHeadTapNote",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 1.5 },
+                { "name": "lane", "value": 5.032894736842105 },
+                { "name": "size", "value": 1.5 },
+                { "name": "direction", "value": 0 },
+                { "name": "isAttached", "value": 0 },
+                { "name": "isSeparator", "value": 1 },
+                { "name": "connectorEase", "value": 4 },
+                { "name": "segmentKind", "value": 1 },
+                { "name": "segmentAlpha", "value": 1 },
+                { "name": "next", "ref": "2" }
+            ],
+            "name": "8"
+        },
+        {
+            "archetype": "NormalTickNote",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 2.25 },
+                { "name": "lane", "value": 4.34109828141783 },
+                { "name": "size", "value": 1.5 },
+                { "name": "direction", "value": 0 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "isSeparator", "value": 0 },
+                { "name": "connectorEase", "value": 1 },
+                { "name": "segmentKind", "value": 103 },
+                { "name": "segmentAlpha", "value": 1 },
+                { "name": "next", "ref": "3" },
+                { "name": "attachHead", "ref": "8" },
+                { "name": "attachTail", "ref": "6" }
+            ],
+            "name": "2"
+        },
+        {
+            "archetype": "CriticalTapNote",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 2.75 },
+                { "name": "lane", "value": 3.1112379162191193 },
+                { "name": "size", "value": 1.5 },
+                { "name": "direction", "value": 0 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "isSeparator", "value": 0 },
+                { "name": "connectorEase", "value": 1 },
+                { "name": "segmentKind", "value": 1 },
+                { "name": "segmentAlpha", "value": 1 },
+                { "name": "next", "ref": "4" },
+                { "name": "attachHead", "ref": "8" },
+                { "name": "attachTail", "ref": "6" }
+            ],
+            "name": "3"
+        },
+        {
+            "archetype": "NormalTapNote",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 3.25 },
+                { "name": "lane", "value": 1.2664473684210527 },
+                { "name": "size", "value": 1.5 },
+                { "name": "direction", "value": 0 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "isSeparator", "value": 0 },
+                { "name": "connectorEase", "value": 1 },
+                { "name": "segmentKind", "value": 1 },
+                { "name": "segmentAlpha", "value": 1 },
+                { "name": "next", "ref": "5" },
+                { "name": "attachHead", "ref": "8" },
+                { "name": "attachTail", "ref": "6" }
+            ],
+            "name": "4"
+        },
+        {
+            "archetype": "CriticalTickNote",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 3.75 },
+                { "name": "lane", "value": -0.578343179377014 },
+                { "name": "size", "value": 1.5 },
+                { "name": "direction", "value": 0 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "isSeparator", "value": 0 },
+                { "name": "connectorEase", "value": 1 },
+                { "name": "segmentKind", "value": 2 },
+                { "name": "segmentAlpha", "value": 1 },
+                { "name": "next", "ref": "6" },
+                { "name": "attachHead", "ref": "8" },
+                { "name": "attachTail", "ref": "6" }
+            ],
+            "name": "5"
+        },
+        {
+            "archetype": "NormalTickNote",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 5 },
+                { "name": "lane", "value": -2.5 },
+                { "name": "size", "value": 1.5 },
+                { "name": "direction", "value": 0 },
+                { "name": "isAttached", "value": 0 },
+                { "name": "isSeparator", "value": 1 },
+                { "name": "connectorEase", "value": 4 },
+                { "name": "segmentKind", "value": 1 },
+                { "name": "segmentAlpha", "value": 1 },
+                { "name": "next", "ref": "7" }
+            ],
+            "name": "6"
+        },
+        {
+            "archetype": "NormalTailReleaseNote",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 6 },
+                { "name": "lane", "value": -4.5 },
+                { "name": "size", "value": 1.5 },
+                { "name": "direction", "value": 0 },
+                { "name": "isAttached", "value": 0 },
+                { "name": "isSeparator", "value": 0 },
+                { "name": "connectorEase", "value": 1 },
+                { "name": "segmentKind", "value": 1 },
+                { "name": "segmentAlpha", "value": 1 },
+                { "name": "activeHead", "ref": "8" }
+            ],
+            "name": "7"
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 2 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "8" },
+                { "name": "attachTail", "ref": "6" }
+            ]
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 2.5 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "8" },
+                { "name": "attachTail", "ref": "6" }
+            ]
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 3 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "8" },
+                { "name": "attachTail", "ref": "6" }
+            ]
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 3.5 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "8" },
+                { "name": "attachTail", "ref": "6" }
+            ]
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 4 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "8" },
+                { "name": "attachTail", "ref": "6" }
+            ]
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 4.5 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "8" },
+                { "name": "attachTail", "ref": "6" }
+            ]
+        },
+        {
+            "archetype": "Connector",
+            "data": [
+                { "name": "head", "ref": "8" },
+                { "name": "tail", "ref": "6" },
+                { "name": "segmentHead", "ref": "8" },
+                { "name": "segmentTail", "ref": "6" },
+                { "name": "activeHead", "ref": "8" },
+                { "name": "activeTail", "ref": "7" }
+            ]
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 5.5 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "6" },
+                { "name": "attachTail", "ref": "7" }
+            ]
+        },
+        {
+            "archetype": "Connector",
+            "data": [
+                { "name": "head", "ref": "6" },
+                { "name": "tail", "ref": "7" },
+                { "name": "segmentHead", "ref": "6" },
+                { "name": "segmentTail", "ref": "7" },
+                { "name": "activeHead", "ref": "8" },
+                { "name": "activeTail", "ref": "7" }
+            ]
+        }
+    ]
+}

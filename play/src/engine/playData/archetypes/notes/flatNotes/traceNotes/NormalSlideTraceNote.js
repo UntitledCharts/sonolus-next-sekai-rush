@@ -5,7 +5,7 @@ import { particle } from '../../../../particle.js'
 import { skin } from '../../../../skin.js'
 import { archetypes } from '../../../index.js'
 import { TraceNote } from './TraceNote.js'
-export class NormalSlideTraceNote extends TraceNote {
+export class NormalHeadTraceNote extends TraceNote {
     sprites = {
         left: skin.sprites.normalTraceNoteLeft,
         middle: skin.sprites.normalTraceNoteMiddle,

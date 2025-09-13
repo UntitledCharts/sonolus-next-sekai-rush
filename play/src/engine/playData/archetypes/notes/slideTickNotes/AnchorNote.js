@@ -1,5 +1,6 @@
 import { Note } from '../Note.js'
-export class IgnoredSlideTickNote extends Note {
+import { SlideTickNote } from './SlideTickNote.js'
+export class AnchorNote extends Note {
     hasInput = false
     leniency = 0
     spawnOrder() {
@@ -8,5 +9,7 @@ export class IgnoredSlideTickNote extends Note {
     shouldSpawn() {
         return false
     }
-    terminate() {}
+    terminate() {
+        //None
+    }
 }

@@ -2,7 +2,7 @@ import { effect } from '../../../effect.js'
 import { particle } from '../../../particle.js'
 import { skin } from '../../../skin.js'
 import { archetypes } from '../../index.js'
-import { ActiveSlideConnector } from './ActiveSlideConnector.js'
+import { ActiveSlideConnector } from './Connector.js'
 export class CriticalActiveSlideConnector extends ActiveSlideConnector {
     sprites = {
         normal: skin.sprites.criticalActiveSlideConnectorNormal,

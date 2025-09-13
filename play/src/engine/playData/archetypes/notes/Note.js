@@ -1,12 +1,23 @@
 import { EngineArchetypeDataName } from '@sonolus/core'
 import { options } from '../../../configuration/options.js'
 import { archetypes } from '../index.js'
+import { getAttached } from './slideTickNotes/utils.js'
 export class Note extends Archetype {
     hasInput = true
     import = this.defineImport({
         beat: { name: EngineArchetypeDataName.Beat, type: Number },
         lane: { name: 'lane', type: Number },
         size: { name: 'size', type: Number },
+        timeScaleGroup: { name: '#TIMESCALE_GROUP', type: Number },
+        isAttached: { name: 'isAttached', type: Number },
+        isSeparator: { name: 'isSeparator', type: Number },
+        connectorEase: { name: 'connectorEase', type: Number },
+        segmentKind: { name: 'segmentKind', type: Number },
+        segmentAlpha: { name: 'segmentAlpha', type: Number },
+        nextRef: { name: 'next', type: Number },
+        attachHead: { name: 'attachHead', type: Number },
+        attachTail: { name: 'attachTail', type: Number },
+        activeHeadRef: { name: 'activeHead', type: Number },
     })
     accuracyExport = this.defineExport({
         fast: { name: 'fast', type: Number },
@@ -20,24 +31,29 @@ export class Note extends Archetype {
         noneMoveLinear: Number,
         slotEffects: Number,
         flick: Boolean,
+        targetTime: Number,
+        timeScaleGroup: Number,
+        startTime: Number,
     })
     targetTime = this.entityMemory(Number)
-    spawnTime = this.entityMemory(Number)
+    startTime = this.entityMemory(Number)
     hitbox = this.entityMemory(Rect)
     fullHitbox = this.entityMemory(Rect)
     preprocess() {
         this.sharedMemory.lastActiveTime = -1000
         this.sharedMemory.exportStartTime = -1000
-        this.targetTime = bpmChanges.at(this.import.beat).time
+        this.sharedMemory.get(this.info.index).targetTime = bpmChanges.at(this.import.beat).time
+        this.sharedMemory.get(this.info.index).timeScaleGroup = this.import.timeScaleGroup
+        this.targetTime = this.sharedMemory.get(this.info.index).targetTime
         if (options.mirror) {
             this.import.lane *= -1
         }
     }
     spawnOrder() {
-        return 1000 + this.spawnTime
+        return 1000 + this.startTime
     }
     shouldSpawn() {
-        return time.scaled >= this.spawnTime
+        return time.now >= this.startTime
     }
     updateSequentialOrder = 2
     terminate() {

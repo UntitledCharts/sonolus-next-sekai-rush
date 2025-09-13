@@ -1,6 +1,6 @@
 import { claimStart, disallowEmpty, getClaimedStart } from '../../../InputManager.js'
 import { FlatNote } from '../FlatNote.js'
-export class SlideStartNote extends FlatNote {
+export class SlideHeadNote extends FlatNote {
     leniency = 1
     updateSequential() {
         if (time.now < this.inputTime.min) return

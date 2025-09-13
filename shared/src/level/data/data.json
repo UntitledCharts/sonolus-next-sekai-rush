@@ -1,0 +1,326 @@
+{
+    "bgmOffset": 0,
+    "entities": [
+        { "archetype": "Initialization", "data": [] },
+        {
+            "archetype": "#BPM_CHANGE",
+            "data": [{ "name": "#BEAT", "value": 0 }, { "name": "#BPM", "value": 60 }]
+        },
+        { "archetype": "#TIMESCALE_GROUP", "data": [{ "name": "first", "ref": "1" }], "name": "0" },
+        {
+            "archetype": "#TIMESCALE_CHANGE",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 1 },
+                { "name": "#TIMESCALE", "value": -1 },
+                { "name": "#TIMESCALE_SKIP", "value": 0 },
+                { "name": "#TIMESCALE_EASE", "value": 0 },
+                { "name": "next", "ref": "2" }
+            ],
+            "name": "1"
+        },
+        {
+            "archetype": "#TIMESCALE_CHANGE",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 2 },
+                { "name": "#TIMESCALE", "value": 1 },
+                { "name": "#TIMESCALE_SKIP", "value": 0 },
+                { "name": "#TIMESCALE_EASE", "value": 0 },
+                { "name": "next", "ref": "3" }
+            ],
+            "name": "2"
+        },
+        {
+            "archetype": "#TIMESCALE_CHANGE",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 4 },
+                { "name": "#TIMESCALE", "value": 0.5 },
+                { "name": "#TIMESCALE_SKIP", "value": 0 },
+                { "name": "#TIMESCALE_EASE", "value": 0 },
+                { "name": "next", "ref": "4" }
+            ],
+            "name": "3"
+        },
+        {
+            "archetype": "#TIMESCALE_CHANGE",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 5 },
+                { "name": "#TIMESCALE", "value": 1 },
+                { "name": "#TIMESCALE_SKIP", "value": 0 },
+                { "name": "#TIMESCALE_EASE", "value": 0 },
+                { "name": "next", "ref": "5" }
+            ],
+            "name": "4"
+        },
+        {
+            "archetype": "#TIMESCALE_CHANGE",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 7 },
+                { "name": "#TIMESCALE", "value": -1 },
+                { "name": "#TIMESCALE_SKIP", "value": 0 },
+                { "name": "#TIMESCALE_EASE", "value": 0 },
+                { "name": "next", "ref": "6" }
+            ],
+            "name": "5"
+        },
+        {
+            "archetype": "#TIMESCALE_CHANGE",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 8 },
+                { "name": "#TIMESCALE", "value": 1 },
+                { "name": "#TIMESCALE_SKIP", "value": 0 },
+                { "name": "#TIMESCALE_EASE", "value": 0 }
+            ],
+            "name": "6"
+        },
+        {
+            "archetype": "NormalHeadTapNote",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 3 },
+                { "name": "lane", "value": 4.5 },
+                { "name": "size", "value": 1.5 },
+                { "name": "direction", "value": 0 },
+                { "name": "isAttached", "value": 0 },
+                { "name": "isSeparator", "value": 0 },
+                { "name": "connectorEase", "value": 1 },
+                { "name": "segmentKind", "value": 1 },
+                { "name": "segmentAlpha", "value": 1 },
+                { "name": "next", "ref": "7" }
+            ],
+            "name": "8"
+        },
+        {
+            "archetype": "NormalTailReleaseNote",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 5 },
+                { "name": "lane", "value": -4.5 },
+                { "name": "size", "value": 1.5 },
+                { "name": "direction", "value": 0 },
+                { "name": "isAttached", "value": 0 },
+                { "name": "isSeparator", "value": 0 },
+                { "name": "connectorEase", "value": 1 },
+                { "name": "segmentKind", "value": 1 },
+                { "name": "segmentAlpha", "value": 1 },
+                { "name": "activeHead", "ref": "8" }
+            ],
+            "name": "7"
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 3.5 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "8" },
+                { "name": "attachTail", "ref": "7" }
+            ]
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 4 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "8" },
+                { "name": "attachTail", "ref": "7" }
+            ]
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 4.5 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "8" },
+                { "name": "attachTail", "ref": "7" }
+            ]
+        },
+        {
+            "archetype": "Connector",
+            "data": [
+                { "name": "head", "ref": "8" },
+                { "name": "tail", "ref": "7" },
+                { "name": "segmentHead", "ref": "8" },
+                { "name": "segmentTail", "ref": "7" },
+                { "name": "activeHead", "ref": "8" },
+                { "name": "activeTail", "ref": "7" }
+            ]
+        },
+        {
+            "archetype": "NormalHeadTapNote",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 0 },
+                { "name": "lane", "value": 4.5 },
+                { "name": "size", "value": 1.5 },
+                { "name": "direction", "value": 0 },
+                { "name": "isAttached", "value": 0 },
+                { "name": "isSeparator", "value": 0 },
+                { "name": "connectorEase", "value": 1 },
+                { "name": "segmentKind", "value": 1 },
+                { "name": "segmentAlpha", "value": 1 },
+                { "name": "next", "ref": "9" }
+            ],
+            "name": "a"
+        },
+        {
+            "archetype": "NormalTailReleaseNote",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 2 },
+                { "name": "lane", "value": -4.5 },
+                { "name": "size", "value": 1.5 },
+                { "name": "direction", "value": 0 },
+                { "name": "isAttached", "value": 0 },
+                { "name": "isSeparator", "value": 0 },
+                { "name": "connectorEase", "value": 1 },
+                { "name": "segmentKind", "value": 1 },
+                { "name": "segmentAlpha", "value": 1 },
+                { "name": "activeHead", "ref": "a" }
+            ],
+            "name": "9"
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 0.5 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "a" },
+                { "name": "attachTail", "ref": "9" }
+            ]
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 1 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "a" },
+                { "name": "attachTail", "ref": "9" }
+            ]
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 1.5 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "a" },
+                { "name": "attachTail", "ref": "9" }
+            ]
+        },
+        {
+            "archetype": "Connector",
+            "data": [
+                { "name": "head", "ref": "a" },
+                { "name": "tail", "ref": "9" },
+                { "name": "segmentHead", "ref": "a" },
+                { "name": "segmentTail", "ref": "9" },
+                { "name": "activeHead", "ref": "a" },
+                { "name": "activeTail", "ref": "9" }
+            ]
+        },
+        {
+            "archetype": "NormalHeadTapNote",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 6 },
+                { "name": "lane", "value": 4.5 },
+                { "name": "size", "value": 1.5 },
+                { "name": "direction", "value": 0 },
+                { "name": "isAttached", "value": 0 },
+                { "name": "isSeparator", "value": 0 },
+                { "name": "connectorEase", "value": 1 },
+                { "name": "segmentKind", "value": 1 },
+                { "name": "segmentAlpha", "value": 1 },
+                { "name": "next", "ref": "b" }
+            ],
+            "name": "d"
+        },
+        {
+            "archetype": "AnchorNote",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 7 },
+                { "name": "lane", "value": 0.5 },
+                { "name": "size", "value": 1.5 },
+                { "name": "direction", "value": 0 },
+                { "name": "isAttached", "value": 0 },
+                { "name": "isSeparator", "value": 0 },
+                { "name": "connectorEase", "value": 1 },
+                { "name": "segmentKind", "value": 1 },
+                { "name": "segmentAlpha", "value": 1 },
+                { "name": "next", "ref": "c" }
+            ],
+            "name": "b"
+        },
+        {
+            "archetype": "NormalTailReleaseNote",
+            "data": [
+                { "name": "#TIMESCALE_GROUP", "ref": "0" },
+                { "name": "#BEAT", "value": 8 },
+                { "name": "lane", "value": -4.5 },
+                { "name": "size", "value": 1.5 },
+                { "name": "direction", "value": 0 },
+                { "name": "isAttached", "value": 0 },
+                { "name": "isSeparator", "value": 0 },
+                { "name": "connectorEase", "value": 1 },
+                { "name": "segmentKind", "value": 1 },
+                { "name": "segmentAlpha", "value": 1 },
+                { "name": "activeHead", "ref": "d" }
+            ],
+            "name": "c"
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 6.5 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "d" },
+                { "name": "attachTail", "ref": "b" }
+            ]
+        },
+        {
+            "archetype": "Connector",
+            "data": [
+                { "name": "head", "ref": "d" },
+                { "name": "tail", "ref": "b" },
+                { "name": "segmentHead", "ref": "d" },
+                { "name": "segmentTail", "ref": "c" },
+                { "name": "activeHead", "ref": "d" },
+                { "name": "activeTail", "ref": "c" }
+            ]
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 7 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "b" },
+                { "name": "attachTail", "ref": "c" }
+            ]
+        },
+        {
+            "archetype": "TransientHiddenTickNote",
+            "data": [
+                { "name": "#BEAT", "value": 7.5 },
+                { "name": "isAttached", "value": 1 },
+                { "name": "attachHead", "ref": "b" },
+                { "name": "attachTail", "ref": "c" }
+            ]
+        },
+        {
+            "archetype": "Connector",
+            "data": [
+                { "name": "head", "ref": "b" },
+                { "name": "tail", "ref": "c" },
+                { "name": "segmentHead", "ref": "d" },
+                { "name": "segmentTail", "ref": "c" },
+                { "name": "activeHead", "ref": "d" },
+                { "name": "activeTail", "ref": "c" }
+            ]
+        }
+    ]
+}

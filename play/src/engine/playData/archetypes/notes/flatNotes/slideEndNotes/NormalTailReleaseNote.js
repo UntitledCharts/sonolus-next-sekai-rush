@@ -4,8 +4,8 @@ import { effect } from '../../../../effect.js'
 import { particle } from '../../../../particle.js'
 import { skin } from '../../../../skin.js'
 import { archetypes } from '../../../index.js'
-import { SlideEndNote } from './SlideEndNote.js'
-export class NormalSlideEndNote extends SlideEndNote {
+import { SlideTailNote } from './SlideTailNote.js'
+export class NormalTailReleaseNote extends SlideTailNote {
     sprites = {
         left: skin.sprites.slideNoteLeft,
         middle: skin.sprites.slideNoteMiddle,

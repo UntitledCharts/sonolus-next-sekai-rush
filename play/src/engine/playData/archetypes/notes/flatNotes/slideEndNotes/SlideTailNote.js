@@ -1,11 +1,8 @@
 import { claimEnd, getClaimedEnd } from '../../../InputManager.js'
 import { archetypes } from '../../../index.js'
 import { FlatNote } from '../FlatNote.js'
-export class SlideEndNote extends FlatNote {
+export class SlideTailNote extends FlatNote {
     leniency = 1
-    slideEndImport = this.defineImport({
-        slideRef: { name: 'slide', type: Number },
-    })
     updateSequential() {
         if (time.now < this.inputTime.min) return
         if (this.startInfo.state === EntityState.Active) return
@@ -24,14 +21,11 @@ export class SlideEndNote extends FlatNote {
         if (index === -1) return
         this.complete(touches.get(index))
     }
-    get slideImport() {
-        return archetypes.NormalSlideConnector.import.get(this.slideEndImport.slideRef)
-    }
     get startInfo() {
-        return entityInfos.get(this.slideImport.startRef)
+        return entityInfos.get(this.import.activeHeadRef)
     }
     get startSharedMemory() {
-        return archetypes.NormalSlideStartNote.sharedMemory.get(this.slideImport.startRef)
+        return archetypes.NormalHeadTapNote.sharedMemory.get(this.import.activeHeadRef)
     }
     complete(touch) {
         this.result.judgment = input.judge(touch.time, this.targetTime, this.windows)

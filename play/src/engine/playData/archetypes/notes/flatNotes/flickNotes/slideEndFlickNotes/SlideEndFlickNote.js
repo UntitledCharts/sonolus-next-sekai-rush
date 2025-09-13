@@ -42,24 +42,24 @@ export class SlideEndFlickNote extends FlickNote {
         }
     }
     get slideImport() {
-        return archetypes.NormalSlideConnector.import.get(this.slideEndFlickImport.slideRef)
+        return archetypes.Connector.import.get(this.slideEndFlickImport.slideRef)
     }
     get startInfo() {
-        return entityInfos.get(this.slideImport.startRef)
+        return entityInfos.get(this.slideImport.activeHeadRef)
     }
     get startSharedMemory() {
-        return archetypes.NormalSlideStartNote.sharedMemory.get(this.slideImport.startRef)
+        return archetypes.NormalHeadTapNote.sharedMemory.get(this.slideImport.activeHeadRef)
     }
     get headImport() {
-        return archetypes.NormalSlideStartNote.import.get(this.slideImport.headRef)
+        return archetypes.NormalHeadTapNote.import.get(this.slideImport.headRef)
     }
     get tailImport() {
-        return archetypes.NormalSlideStartNote.import.get(this.slideImport.tailRef)
+        return archetypes.NormalHeadTapNote.import.get(this.slideImport.tailRef)
     }
     earlyTouch() {
         if (this.startSharedMemory.lastActiveTime === time.now) return
         const s = ease(
-            this.slideImport.ease,
+            this.import.connectorEase,
             Math.unlerpClamped(
                 this.head.scaledTime,
                 this.tail.scaledTime,

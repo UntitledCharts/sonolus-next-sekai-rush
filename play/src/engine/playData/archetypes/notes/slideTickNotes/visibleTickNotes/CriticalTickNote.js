@@ -1,8 +1,8 @@
-import { effect } from '../../../../../effect.js'
-import { particle } from '../../../../../particle.js'
-import { skin } from '../../../../../skin.js'
-import { AttachedSlideTickNote } from './AttachedSlideTickNote.js'
-export class CriticalAttachedSlideTickNote extends AttachedSlideTickNote {
+import { effect } from '../../../../effect.js'
+import { particle } from '../../../../particle.js'
+import { skin } from '../../../../skin.js'
+import { VisibleSlideTickNote } from './VisibleTickNote.js'
+export class CriticalTickNote extends VisibleSlideTickNote {
     sprites = {
         tick: skin.sprites.criticalSlideTickNote,
         fallback: skin.sprites.criticalSlideTickNoteFallback,

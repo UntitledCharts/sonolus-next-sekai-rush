@@ -7,27 +7,18 @@ import { flatEffectLayout } from '../../../../particle.js'
 import { scaledScreen } from '../../../../scaledScreen.js'
 import { getZ, layer } from '../../../../skin.js'
 import { SlideTickNote } from '../SlideTickNote.js'
+import { timeToScaledTime } from '../../../utils.js'
 export class VisibleSlideTickNote extends SlideTickNote {
-    visualTime = this.entityMemory(Range)
-    hiddenTime = this.entityMemory(Number)
     spriteLayout = this.entityMemory(Quad)
     z = this.entityMemory(Number)
     y = this.entityMemory(Number)
     preprocess() {
         super.preprocess()
-        this.visualTime.copyFrom(
-            Range.l.mul(note.duration).add(timeScaleChanges.at(this.targetTime).scaledTime),
-        )
-        this.spawnTime = Math.min(
-            this.visualTime.min,
-            timeScaleChanges.at(this.inputTime).scaledTime,
-        )
         if (this.shouldScheduleSFX) this.scheduleSFX()
     }
     initialize() {
         super.initialize()
-        if (options.hidden > 0)
-            this.hiddenTime = this.visualTime.max - note.duration * options.hidden
+        if (options.hidden > 0) this.hiddenTime = this.endTime - note.duration * options.hidden
         const b = 1 + note.h
         const t = 1 - note.h
         if (this.useFallbackSprite) {
@@ -50,8 +41,9 @@ export class VisibleSlideTickNote extends SlideTickNote {
     updateParallel() {
         super.updateParallel()
         if (this.despawn) return
-        if (time.scaled < this.visualTime.min) return
-        if (options.hidden > 0 && time.scaled > this.hiddenTime) return
+        const scaledTime = timeToScaledTime(time.now, this.import.timeScaleGroup)
+        if (scaledTime < this.visualStartTime) return
+        if (options.hidden > 0 && scaledTime > this.hiddenTime) return
         this.render()
     }
     get shouldScheduleSFX() {
@@ -75,7 +67,11 @@ export class VisibleSlideTickNote extends SlideTickNote {
     }
     render() {
         if (time.now >= this.targetTime) return
-        this.y = approach(this.visualTime.min, this.visualTime.max, time.scaled)
+        this.y = approach(
+            this.visualStartTime,
+            this.endTime,
+            timeToScaledTime(time.now, this.import.timeScaleGroup),
+        )
         if (this.useFallbackSprite) {
             this.sprites.fallback.draw(this.spriteLayout.mul(this.y), this.z, 1)
         } else {

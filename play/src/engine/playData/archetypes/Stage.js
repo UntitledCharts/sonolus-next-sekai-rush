@@ -7,7 +7,7 @@ import { particle } from '../particle.js'
 import { scaledScreen } from '../scaledScreen.js'
 import { layer, skin } from '../skin.js'
 import { canEmpty } from './InputManager.js'
-export class Stage extends Archetype {
+export class Stage extends SpawnableArchetype({}) {
     hitbox = this.entityMemory(Rect)
     spawnOrder() {
         return 1
