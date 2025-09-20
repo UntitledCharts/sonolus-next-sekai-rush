@@ -7,8 +7,8 @@ export default {
     esbuild(options) {
         return {
             ...options,
-            treeShaking: false,
-            minifyWhitespace: false,
+            treeShaking: true,
+            minifyWhitespace: true,
         }
     },
     devServer(sonolus) {
