@@ -13,7 +13,7 @@ export class JudgmentText extends SpawnableArchetype({
     combo = this.entityMemory(Number)
     comboCheck = levelMemory(Number)
     initialize() {
-        this.z = getZ(layer.judgment, -this.spawnData.time, 0)
+        this.z = getZ(layer.judgment, -this.spawnData.time, 0, 0)
     }
     updateParallel() {
         if (this.combo != this.comboCheck) {

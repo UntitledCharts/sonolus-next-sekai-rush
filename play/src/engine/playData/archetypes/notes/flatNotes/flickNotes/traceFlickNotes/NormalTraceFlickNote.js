@@ -39,6 +39,22 @@ export class NormalTraceFlickNote extends TraceFlickNote {
             skin.sprites.flickArrowLeft5,
             skin.sprites.flickArrowLeft6,
         ],
+        down: [
+            skin.sprites.flickArrowDown1,
+            skin.sprites.flickArrowDown2,
+            skin.sprites.flickArrowDown3,
+            skin.sprites.flickArrowDown4,
+            skin.sprites.flickArrowDown5,
+            skin.sprites.flickArrowDown6,
+        ],
+        downLeft: [
+            skin.sprites.flickArrowDownLeft1,
+            skin.sprites.flickArrowDownLeft2,
+            skin.sprites.flickArrowDownLeft3,
+            skin.sprites.flickArrowDownLeft4,
+            skin.sprites.flickArrowDownLeft5,
+            skin.sprites.flickArrowDownLeft6,
+        ],
         fallback: skin.sprites.flickArrowFallback,
     }
     directionalEffect = particle.effects.flickNoteDirectional

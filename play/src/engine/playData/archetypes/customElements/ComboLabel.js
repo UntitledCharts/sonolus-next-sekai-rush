@@ -12,8 +12,8 @@ export class ComboLabel extends SpawnableArchetype({
     combo = this.entityMemory(Number)
     ap = levelMemory(Boolean)
     initialize() {
-        this.z = getZ(layer.judgment, this.spawnData.time, 0)
-        this.z2 = getZ(layer.judgment - 1, this.spawnData.time, 0)
+        this.z = getZ(layer.judgment, -this.spawnData.time, 0, 0)
+        this.z2 = getZ(layer.judgment - 1, -this.spawnData.time, 0, 0)
     }
     updateParallel() {
         if (this.combo != this.comboCheck) {

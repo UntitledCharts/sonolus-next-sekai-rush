@@ -20,3 +20,14 @@ export const NormalLayout = ({ l, r, b, t }) =>
         y3: t,
         y4: b,
     })
+export const QuadLayout = ({ bl, br, tl, tr }) =>
+    new Quad({
+        x1: bl.x,
+        x2: tl.x,
+        x3: tr.x,
+        x4: br.x,
+        y1: bl.y,
+        y2: tl.y,
+        y3: tr.y,
+        y4: br.y,
+    })

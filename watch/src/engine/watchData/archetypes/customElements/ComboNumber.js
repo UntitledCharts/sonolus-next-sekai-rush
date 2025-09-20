@@ -68,6 +68,9 @@ export class ComboNumber extends SpawnableArchetype({}) {
         const t = this.customCombo.get(this.head).time
         if (c != 0) {
             const digits = [
+                Math.floor(c / 1000000) % 10,
+                Math.floor(c / 100000) % 10,
+                Math.floor(c / 10000) % 10,
                 Math.floor(c / 1000) % 10,
                 Math.floor(c / 100) % 10,
                 Math.floor(c / 10) % 10,

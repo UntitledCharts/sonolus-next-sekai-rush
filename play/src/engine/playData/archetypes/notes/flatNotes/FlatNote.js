@@ -1,4 +1,8 @@
-import { approach } from '../../../../../../../shared/src/engine/data/note.js'
+import {
+    approach2,
+    progressCutoff,
+    progressStart,
+} from '../../../../../../../shared/src/engine/data/note.js'
 import { perspectiveLayout } from '../../../../../../../shared/src/engine/data/utils.js'
 import { toBucketWindows } from '../../../../../../../shared/src/engine/data/windows.js'
 import { options } from '../../../../configuration/options.js'
@@ -8,10 +12,10 @@ import { note } from '../../../note.js'
 import { circularEffectLayout, linearEffectLayout, particle } from '../../../particle.js'
 import { getZ, layer } from '../../../skin.js'
 import { Note } from '../Note.js'
-
+import { getVisualSpawnTime, progress } from '../../utils.js'
+import { getAttached } from '../slideTickNotes/utils.js'
 export class FlatNote extends Note {
     layer = layer.note.body
-    visualTime = this.entityMemory(Range)
     hiddenTime = this.entityMemory(Number)
     inputTime = this.entityMemory(Range)
     spriteLayouts = this.entityMemory({
@@ -21,25 +25,49 @@ export class FlatNote extends Note {
     })
     z = this.entityMemory(Number)
     y = this.entityMemory(Number)
+    progress = this.entityMemory(Number)
     globalPreprocess() {
         this.bucket.set(toBucketWindows(this.windows))
         this.life.miss = -80
     }
     preprocess() {
         super.preprocess()
-        this.visualTime.copyFrom(
-            Range.l.mul(note.duration).add(timeScaleChanges.at(this.targetTime).scaledTime),
-        )
         this.inputTime.copyFrom(this.windows.good.add(this.targetTime).add(input.offset))
-        this.spawnTime = Math.min(
-            this.visualTime.min,
-            timeScaleChanges.at(this.inputTime.min).scaledTime,
-        )
+        if (this.import.isAttached == 0) {
+            this.sharedMemory.visualStartTime = getVisualSpawnTime(
+                this.sharedMemory.targetScaledTime,
+                this.import.timeScaleGroup,
+            )
+            this.spawnTime = Math.min(this.sharedMemory.visualStartTime, this.targetTime)
+            this.sharedMemory.spawnTime = this.spawnTime
+        }
+        this.attach()
         if (this.shouldScheduleSFX) this.scheduleSFX()
     }
+    attach() {
+        if (this.import.isAttached == 1) {
+            if (!this.import.isSeparator) {
+                this.import.connectorEase = this.import.get(this.import.attachHead).connectorEase
+            }
+            ;({ lane: this.import.lane, size: this.import.size } = getAttached(
+                this.import.connectorEase,
+                this.import.get(this.import.attachHead).lane,
+                this.import.get(this.import.attachHead).size,
+                bpmChanges.at(this.import.get(this.import.attachHead).beat).time,
+                this.import.get(this.import.attachTail).lane,
+                this.import.get(this.import.attachTail).size,
+                bpmChanges.at(this.import.get(this.import.attachTail).beat).time,
+                this.targetTime,
+            ))
+            this.sharedMemory.visualStartTime = Math.min(
+                this.sharedMemory.get(this.import.attachHead).visualStartTime,
+                this.sharedMemory.get(this.import.attachTail).visualStartTime,
+            )
+            this.spawnTime = Math.min(this.sharedMemory.visualStartTime, this.targetTime)
+            this.sharedMemory.spawnTime = this.spawnTime
+        }
+    }
     initialize() {
-        if (options.hidden > 0)
-            this.hiddenTime = this.visualTime.max - note.duration * options.hidden
         const l = this.import.lane - this.import.size
         const r = this.import.lane + this.import.size
         getHitbox({ l, r, leniency: 0 }).copyTo(this.hitbox)
@@ -55,14 +83,13 @@ export class FlatNote extends Note {
             perspectiveLayout({ l: ml, r: mr, b, t }).copyTo(this.spriteLayouts.middle)
             perspectiveLayout({ l: mr, r, b, t }).copyTo(this.spriteLayouts.right)
         }
-        this.z = getZ(this.layer, -this.targetTime, -Math.abs(this.import.lane))
+        this.z = getZ(this.layer, -this.targetTime, this.import.lane, 0)
         this.result.accuracy = this.windows.good.max
     }
     updateParallel() {
-        if (time.now > this.inputTime.max) this.despawn = true
         if (this.despawn) return
-        if (time.scaled < this.visualTime.min) return
-        if (options.hidden > 0 && time.scaled > this.hiddenTime) return
+        if (time.now > this.inputTime.max) this.despawn = true
+        if (time.now < this.sharedMemory.visualStartTime) return
         this.render()
     }
     get shouldScheduleSFX() {
@@ -104,7 +131,20 @@ export class FlatNote extends Note {
         }
     }
     render() {
-        this.y = approach(this.visualTime.min, this.visualTime.max, time.scaled)
+        this.progress = progress(
+            this.import.isAttached,
+            this.import.attachHead,
+            this.import.attachTail,
+            this.targetTime,
+            this.sharedMemory.targetScaledTime,
+            this.import.timeScaleGroup,
+        )
+        if (progressStart > this.progress || this.progress > progressCutoff) return
+        this.y = approach2(this.progress) /*approach(
+            this.sharedMemory.visualStartTime,
+            this.endTime,
+            timeToScaledTime(time.now, this.import.timeScaleGroup),
+        )*/
         if (this.useFallbackSprites) {
             this.sprites.fallback.draw(this.spriteLayouts.middle.mul(this.y), this.z, 1)
         } else {

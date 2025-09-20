@@ -1,7 +1,7 @@
 {
-    "name": "sonolus-pjsekai-js",
-    "version": "1.4.15",
-    "description": "A recreation of Project Sekai: Colorful Stage! engine in Sonolus",
+    "name": "sonolus-next-sekai-rush",
+    "version": "0.1.0",
+    "description": "Next SEKAI's expansion engine",
     "type": "module",
     "files": [
         "dist"
@@ -20,17 +20,17 @@
         "dev-watch": "sonolus-cli --dev ./watch",
         "dev-preview": "sonolus-cli --dev ./preview",
         "dev-tutorial": "sonolus-cli --dev ./tutorial",
-        "format": "biome format --write",
+        "format": "biome format --write --files-max-size=100000000",
         "lint": "biome lint",
         "lint-fix": "biome lint --write",
         "biome": "biome check",
         "build": "tsc -p ./lib && sonolus-cli --build ./play && sonolus-cli --build ./watch && sonolus-cli --build ./preview && sonolus-cli --build ./tutorial && node ./lib/build.js"
     },
     "devDependencies": {
-        "@biomejs/biome": "2.0.6",
+        "@biomejs/biome": "2.2.4",
         "@sonolus/sonolus.js": "~9.6.0",
-        "typescript": "~5.8.3",
-        "esbuild": "0.25.8"
+        "typescript": "~5.9.2",
+        "esbuild": "0.25.9"
     },
     "dependencies": {
         "@sonolus/core": "~7.14.0"

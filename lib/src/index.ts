@@ -5,48 +5,32 @@ export { uscToLevelData } from "./usc/convert.js";
 export * from "./usc/index.js";
 export { uscToUSC } from "./usc/revert.js";
 
-export const version = "1.4.15";
+export const version = "0.1.0";
 
 export const databaseEngineItem = {
-    name: "prosekaR",
+    name: "NextSEKAI-R",
     version: 13,
     title: {
-        en: "ProSeka R",
-        ja: "プロセカ R",
-        ko: "프로세카 R",
-        zhs: "世界计划 R",
-        zht: "世界計劃 R",
+        en: "NextSEKAI R",
     },
     subtitle: {
-        en: "ProSeka Rush",
-        ja: "プロセカ ラッシュ",
-        ko: "프로세카 러쉬",
-        zhs: "世界计划 匆忙",
-        zht: "世界計劃 匆忙",
+        en: "NextSEKAI R",
     },
     author: {
-        en: "prosekaR",
+        en: "NextSEKAI R",
     },
     description: {
         en: [
-            "A recreation of Project Sekai: Colorful Stage! engine in Sonolus.",
+            "Next SEKAI's expansion engine",
             `Version: ${version}`,
             "",
-            "Forked from the pjsekai engine by Burrito#1000.",
-            "https://github.com/NonSpicyBurrito/sonolus-pjsekai-engine",
-            "",
-            "Github:",
-            "https://github.com/hyeon2006/sonolus-pjsekai-js",
+            "https://github.com/Next-SEKAI/sonolus-next-sekai-engine",
         ].join("\n"),
         ko: [
-            "A recreation of Project Sekai: Colorful Stage! engine in Sonolus.",
+            "Next SEKAI의 확장 엔진",
             `버전: ${version}`,
             "",
-            "Burrito#1000의 pjsekai 엔진에서 포크되었습니다.",
-            "https://github.com/NonSpicyBurrito/sonolus-pjsekai-engine",
-            "",
-            "깃허브:",
-            "https://github.com/hyeon2006/sonolus-pjsekai-js",
+            "https://github.com/Next-SEKAI/sonolus-next-sekai-engine",
         ].join("\n"),
     },
 } as const satisfies Partial<DatabaseEngineItem>;

@@ -7,13 +7,13 @@ import { particle } from '../particle.js'
 import { scaledScreen } from '../scaledScreen.js'
 import { layer, skin } from '../skin.js'
 import { canEmpty } from './InputManager.js'
-export class Stage extends Archetype {
+export class Stage extends SpawnableArchetype({}) {
     hitbox = this.entityMemory(Rect)
     spawnOrder() {
-        return 1
+        return -1e8
     }
     shouldSpawn() {
-        return entityInfos.get(0).state === EntityState.Despawned
+        return true
     }
     initialize() {
         new Rect(lane.hitbox).transform(skin.transform).copyTo(this.hitbox)
@@ -31,6 +31,7 @@ export class Stage extends Archetype {
         }
     }
     updateParallel() {
+        if (!options.showLane) return
         if (this.useFallbackStage) {
             this.drawFallbackStage()
         } else {
@@ -72,12 +73,8 @@ export class Stage extends Archetype {
         const w = ((2048 / 1420) * 12) / 2
         const h = 1176 / 850
         const layout = new Rect({ l: -w, r: w, t: lane.t, b: lane.t + h })
-        skin.sprites.sekaiStage.draw(layout, layer.stage, !options.showLane ? 0 : 1)
-        skin.sprites.sekaiStageCover.draw(
-            layout,
-            layer.stage - 0.01,
-            !options.showLane ? 0 : options.laneAlpha,
-        )
+        skin.sprites.sekaiStageLane.draw(layout, layer.stage, 1)
+        skin.sprites.sekaiStageCover.draw(layout, layer.stage - 0.01, options.laneAlpha)
     }
     drawFallbackStage() {
         skin.sprites.stageLeftBorder.draw(

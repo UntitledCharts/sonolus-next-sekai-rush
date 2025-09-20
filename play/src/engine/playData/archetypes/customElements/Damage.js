@@ -10,7 +10,7 @@ export class Damage extends SpawnableArchetype({
     comboCheck = levelMemory(Number)
     combo = this.entityMemory(Number)
     initialize() {
-        this.z = getZ(layer.damage, this.spawnData.time, 0)
+        this.z = getZ(layer.damage, -this.spawnData.time, 0, 0)
         this.endTime = this.spawnData.time + 0.35
     }
     updateParallel() {

@@ -12,7 +12,7 @@ export class ComboNumberGlow extends SpawnableArchetype({
     comboCheck = levelMemory(Number)
     ap = levelMemory(Boolean)
     initialize() {
-        this.z = getZ(layer.judgment + 1, this.spawnData.time, 0)
+        this.z = getZ(layer.judgment + 1, -this.spawnData.time, 0, 0)
     }
     updateParallel() {
         if (this.combo != this.comboCheck) {
@@ -25,15 +25,16 @@ export class ComboNumberGlow extends SpawnableArchetype({
         }
         const c = this.combo
         const digits = [
+            Math.floor(c / 1000000) % 10,
+            Math.floor(c / 100000) % 10,
+            Math.floor(c / 10000) % 10,
             Math.floor(c / 1000) % 10,
             Math.floor(c / 100) % 10,
             Math.floor(c / 10) % 10,
             c % 10,
         ]
-        let digitCount = 4
-        if (digits[0] === 0) digitCount = 3
-        if (digits[0] === 0 && digits[1] === 0) digitCount = 2
-        if (digits[0] === 0 && digits[1] === 0 && digits[2] === 0) digitCount = 1
+        const firstDigitIndex = digits.findIndex((digit) => digit !== 0)
+        const digitCount = firstDigitIndex === -1 ? 1 : digits.length - firstDigitIndex
         const h = 0.1222 * ui.configuration.combo.scale
         const digitWidth = h * 0.79 * 7
         const centerX = 5.337
