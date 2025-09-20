@@ -1,5 +1,10 @@
 export const getArrowSpriteId = (arrowSprites, size, direction) => {
-    const getId = (index) => (direction ? arrowSprites.left[index].id : arrowSprites.up[index].id)
+    const getId = (index) => {
+        if (direction == 0) return arrowSprites.up[index].id
+        else if (direction < 3) return arrowSprites.left[index].id
+        else if (direction == 3) return arrowSprites.down[index].id
+        else return arrowSprites.downLeft[index].id
+    }
     switch (Math.clamp(Math.round(size * 2), 1, 6)) {
         case 1:
             return getId(0)

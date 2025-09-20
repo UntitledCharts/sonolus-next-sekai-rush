@@ -39,6 +39,22 @@ export class CriticalTraceFlickNote extends TraceFlickNote {
             skin.sprites.criticalArrowLeft5,
             skin.sprites.criticalArrowLeft6,
         ],
+        down: [
+            skin.sprites.criticalArrowDown1,
+            skin.sprites.criticalArrowDown2,
+            skin.sprites.criticalArrowDown3,
+            skin.sprites.criticalArrowDown4,
+            skin.sprites.criticalArrowDown5,
+            skin.sprites.criticalArrowDown6,
+        ],
+        downLeft: [
+            skin.sprites.criticalArrowDownLeft1,
+            skin.sprites.criticalArrowDownLeft2,
+            skin.sprites.criticalArrowDownLeft3,
+            skin.sprites.criticalArrowDownLeft4,
+            skin.sprites.criticalArrowDownLeft5,
+            skin.sprites.criticalArrowDownLeft6,
+        ],
         fallback: skin.sprites.criticalArrowFallback,
     }
     directionalEffect = particle.effects.criticalNoteDirectional

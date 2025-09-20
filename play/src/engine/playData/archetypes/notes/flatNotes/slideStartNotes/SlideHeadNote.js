@@ -21,8 +21,4 @@ export class SlideHeadNote extends FlatNote {
         this.playHitEffects(touch.startTime)
         this.despawn = true
     }
-    render() {
-        if (time.now >= this.targetTime) return
-        super.render()
-    }
 }

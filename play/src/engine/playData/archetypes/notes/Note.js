@@ -2,6 +2,7 @@ import { EngineArchetypeDataName } from '@sonolus/core'
 import { options } from '../../../configuration/options.js'
 import { archetypes } from '../index.js'
 import { getAttached } from './slideTickNotes/utils.js'
+import { timeToScaledTime } from '../utils.js'
 export class Note extends Archetype {
     hasInput = true
     import = this.defineImport({
@@ -32,30 +33,66 @@ export class Note extends Archetype {
         slotEffects: Number,
         flick: Boolean,
         targetTime: Number,
+        targetScaledTime: Number,
         timeScaleGroup: Number,
-        startTime: Number,
+        spawnTime: Number,
+        visualStartTime: Number,
+        lane: Number,
+        size: Number,
+        segmentKind: Number,
+        connectorEase: Number,
+        isAttached: Number,
+        attachHead: Number,
+        attachTail: Number,
+        segmentAlpha: Number,
+        activeConnectorInfo: {
+            prevInputLane: Number,
+            prevInputSize: Number,
+            inputLane: Number,
+            inputSize: Number,
+            visualLane: Number,
+            visualSize: Number,
+            kind: Number,
+            info: Number,
+        },
     })
     targetTime = this.entityMemory(Number)
-    startTime = this.entityMemory(Number)
+    spawnTime = this.entityMemory(Number)
     hitbox = this.entityMemory(Rect)
     fullHitbox = this.entityMemory(Rect)
+    flick = this.entityMemory(Boolean)
+    preprocessOrder = -1
     preprocess() {
         this.sharedMemory.lastActiveTime = -1000
         this.sharedMemory.exportStartTime = -1000
-        this.sharedMemory.get(this.info.index).targetTime = bpmChanges.at(this.import.beat).time
-        this.sharedMemory.get(this.info.index).timeScaleGroup = this.import.timeScaleGroup
-        this.targetTime = this.sharedMemory.get(this.info.index).targetTime
+        this.sharedMemory.targetTime = bpmChanges.at(this.import.beat).time
+        this.targetTime = bpmChanges.at(this.import.beat).time
+        this.sharedMemory.targetScaledTime = timeToScaledTime(
+            this.targetTime,
+            this.import.timeScaleGroup,
+        )
+        this.sharedMemory.timeScaleGroup = this.import.timeScaleGroup
+        this.sharedMemory.lane = this.import.lane
+        this.sharedMemory.size = this.import.size
+        this.sharedMemory.segmentKind = this.import.segmentKind
+        this.sharedMemory.connectorEase = this.import.connectorEase
+        this.sharedMemory.isAttached = this.import.isAttached
+        this.sharedMemory.attachHead = this.import.attachHead
+        this.sharedMemory.attachTail = this.import.attachTail
+        this.sharedMemory.segmentAlpha =
+            this.import.segmentKind < 100 && this.import.segmentKind > 0
+                ? 1
+                : this.import.segmentAlpha
         if (options.mirror) {
             this.import.lane *= -1
         }
     }
     spawnOrder() {
-        return 1000 + this.startTime
+        return this.spawnTime
     }
     shouldSpawn() {
-        return time.now >= this.startTime
+        return time.now >= this.spawnTime
     }
-    updateSequentialOrder = 2
     terminate() {
         this.accuracyExport('fast', this.windows.perfect.min)
         this.accuracyExport('late', this.windows.perfect.max)
@@ -81,7 +118,7 @@ export class Note extends Archetype {
                 accuracy: this.result.accuracy,
                 min: this.windows.perfect.min,
                 max: this.windows.perfect.max,
-                flick: this.sharedMemory.get(this.info.index).flick,
+                flick: this.flick,
             })
         if (options.customCombo) {
             archetypes.ComboNumber.spawn({

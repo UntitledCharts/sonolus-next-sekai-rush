@@ -7,8 +7,15 @@ export class TimeScaleChange extends Archetype {
         beat: { name: EngineArchetypeDataName.Beat, type: Number },
         timeScale: { name: EngineArchetypeDataName.TimeScale, type: Number },
         nextRef: { name: 'next', type: Number },
+        timeScaleSkip: { name: '#TIMESCALE_SKIP', type: Number },
+        timeScaleEase: { name: '#TIMESCALE_EASE', type: Number },
     })
-
+    spawnOrder() {
+        return 1e8
+    }
+    shouldSpawn() {
+        return false
+    }
     initialize() {
         this.despawn = true
     }

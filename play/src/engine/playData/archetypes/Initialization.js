@@ -8,12 +8,12 @@ export class Initialization extends Archetype {
         const targetAspectRatio = 16 / 9
         const stage = {
             w: options.lockStageAspectRatio
-                ? screen.aspectRatio >= targetAspectRatio
+                ? screen.aspectRatio > targetAspectRatio
                     ? targetAspectRatio * screen.h
                     : screen.w
                 : screen.w,
             h: options.lockStageAspectRatio
-                ? screen.aspectRatio >= targetAspectRatio
+                ? screen.aspectRatio > targetAspectRatio
                     ? screen.h
                     : screen.w / targetAspectRatio
                 : screen.h,
@@ -25,6 +25,9 @@ export class Initialization extends Archetype {
         scaledScreen.r = screen.r / w
         scaledScreen.b = screen.b / (b - t)
         scaledScreen.t = screen.t / (b - t)
+        scaledScreen.t2 = t
+        scaledScreen.w = w
+        scaledScreen.h = b - t
         scaledScreen.wToH = w / (t - b)
         const transform = Mat.identity.scale(w, b - t).translate(0, t)
         skin.transform.set(transform)
@@ -130,7 +133,10 @@ export class Initialization extends Archetype {
         }
     }
     spawnOrder() {
-        return 0
+        return -1e8
+    }
+    shouldSpawn() {
+        return true
     }
     updateSequential() {
         archetypes.InputManager.spawn({})

@@ -8,7 +8,7 @@ import { skin } from '../../../../../skin.js'
 import { archetypes } from '../../../../index.js'
 import { SharedLaneEffectUtils } from '../SharedLaneEffectUtils.js'
 import { SlideEndFlickNote } from './SlideEndFlickNote.js'
-export class CriticalSlideEndFlickNote extends SlideEndFlickNote {
+export class CriticalTailFlickNote extends SlideEndFlickNote {
     sprites = {
         left: skin.sprites.criticalNoteLeft,
         middle: skin.sprites.criticalNoteMiddle,
@@ -42,6 +42,22 @@ export class CriticalSlideEndFlickNote extends SlideEndFlickNote {
             skin.sprites.criticalArrowLeft4,
             skin.sprites.criticalArrowLeft5,
             skin.sprites.criticalArrowLeft6,
+        ],
+        down: [
+            skin.sprites.criticalArrowDown1,
+            skin.sprites.criticalArrowDown2,
+            skin.sprites.criticalArrowDown3,
+            skin.sprites.criticalArrowDown4,
+            skin.sprites.criticalArrowDown5,
+            skin.sprites.criticalArrowDown6,
+        ],
+        downLeft: [
+            skin.sprites.criticalArrowDownLeft1,
+            skin.sprites.criticalArrowDownLeft2,
+            skin.sprites.criticalArrowDownLeft3,
+            skin.sprites.criticalArrowDownLeft4,
+            skin.sprites.criticalArrowDownLeft5,
+            skin.sprites.criticalArrowDownLeft6,
         ],
         fallback: skin.sprites.criticalArrowFallback,
     }

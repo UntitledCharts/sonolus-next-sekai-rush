@@ -1,5 +1,5 @@
-import { particle } from '../../../particle'
-import { archetypes } from '../../index'
+import { particle } from '../../particle'
+import { archetypes } from '../index'
 export class SlideParticleManager extends SpawnableArchetype({
     activeHeadRef: Number,
     function: Number,

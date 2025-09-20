@@ -1,11 +1,11 @@
-import { windows } from '../../../../../../../../shared/src/engine/data/windows.js'
-import { buckets } from '../../../../buckets.js'
-import { effect } from '../../../../effect.js'
-import { particle } from '../../../../particle.js'
-import { skin } from '../../../../skin.js'
-import { archetypes } from '../../../index.js'
-import { TraceNote } from './TraceNote.js'
-export class CriticalHeadTraceNote extends TraceNote {
+import { windows } from '../../../../../../../../../shared/src/engine/data/windows.js'
+import { buckets } from '../../../../../buckets.js'
+import { effect } from '../../../../../effect.js'
+import { particle } from '../../../../../particle.js'
+import { skin } from '../../../../../skin.js'
+import { archetypes } from '../../../../index.js'
+import { TraceNote } from '../TraceNote.js'
+export class CriticalTailTraceNote extends TraceNote {
     sprites = {
         left: skin.sprites.criticalTraceNoteLeft,
         middle: skin.sprites.criticalTraceNoteMiddle,
@@ -23,8 +23,8 @@ export class CriticalHeadTraceNote extends TraceNote {
         linear: particle.effects.criticalTraceNoteLinear,
         linearFallback: particle.effects.criticalNoteLinear,
     }
-    windows = windows.slideTraceNote.critical
-    bucket = buckets.criticalSlideTraceNote
+    windows = windows.slideEndTraceNote.critical
+    bucket = buckets.criticalSlideEndTraceNote
     get slotEffect() {
         return archetypes.CriticalSlotEffect
     }

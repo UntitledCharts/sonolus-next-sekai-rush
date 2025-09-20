@@ -4,13 +4,13 @@ import { effect } from '../../../../../effect.js'
 import { particle } from '../../../../../particle.js'
 import { skin } from '../../../../../skin.js'
 import { archetypes } from '../../../../index.js'
-import { SlideEndFlickNote } from './SlideEndFlickNote.js'
-export class NormalSlideEndFlickNote extends SlideEndFlickNote {
+import { HeadFlickNote } from './HeadFlickNote.js'
+export class NormalHeadFlickNote extends HeadFlickNote {
     sprites = {
         left: skin.sprites.flickNoteLeft,
         middle: skin.sprites.flickNoteMiddle,
         right: skin.sprites.flickNoteRight,
-        fallback: skin.sprites.flickNoteEndFallback,
+        fallback: skin.sprites.flickNoteFallback,
     }
     clips = {
         perfect: effect.clips.flickPerfect,
@@ -39,11 +39,27 @@ export class NormalSlideEndFlickNote extends SlideEndFlickNote {
             skin.sprites.flickArrowLeft5,
             skin.sprites.flickArrowLeft6,
         ],
+        down: [
+            skin.sprites.flickArrowDown1,
+            skin.sprites.flickArrowDown2,
+            skin.sprites.flickArrowDown3,
+            skin.sprites.flickArrowDown4,
+            skin.sprites.flickArrowDown5,
+            skin.sprites.flickArrowDown6,
+        ],
+        downLeft: [
+            skin.sprites.flickArrowDownLeft1,
+            skin.sprites.flickArrowDownLeft2,
+            skin.sprites.flickArrowDownLeft3,
+            skin.sprites.flickArrowDownLeft4,
+            skin.sprites.flickArrowDownLeft5,
+            skin.sprites.flickArrowDownLeft6,
+        ],
         fallback: skin.sprites.flickArrowFallback,
     }
     directionalEffect = particle.effects.flickNoteDirectional
-    windows = windows.slideEndFlickNote.normal
-    bucket = buckets.normalSlideEndFlickNote
+    windows = windows.flickNote.normal
+    bucket = buckets.normalFlickNote
     get slotEffect() {
         return archetypes.FlickSlotEffect
     }

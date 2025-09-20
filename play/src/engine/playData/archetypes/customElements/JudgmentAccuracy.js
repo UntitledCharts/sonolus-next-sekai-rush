@@ -17,7 +17,7 @@ export class JudgmentAccuracy extends SpawnableArchetype({
     combo = this.entityMemory(Number)
     comboCheck = levelMemory(Number)
     initialize() {
-        this.z = getZ(layer.judgment, 0, 0)
+        this.z = getZ(layer.judgment, 0, 0, 0)
     }
     updateParallel() {
         if (this.combo != this.comboCheck) {

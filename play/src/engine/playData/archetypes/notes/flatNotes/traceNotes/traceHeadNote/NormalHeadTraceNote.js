@@ -1,11 +1,11 @@
-import { windows } from '../../../../../../../../shared/src/engine/data/windows.js'
-import { buckets } from '../../../../buckets.js'
-import { effect } from '../../../../effect.js'
-import { particle } from '../../../../particle.js'
-import { skin } from '../../../../skin.js'
-import { archetypes } from '../../../index.js'
-import { TraceNote } from './TraceNote.js'
-export class NormalTailTraceNote extends TraceNote {
+import { windows } from '../../../../../../../../../shared/src/engine/data/windows.js'
+import { buckets } from '../../../../../buckets.js'
+import { effect } from '../../../../../effect.js'
+import { particle } from '../../../../../particle.js'
+import { skin } from '../../../../../skin.js'
+import { archetypes } from '../../../../index.js'
+import { TraceNote } from '../TraceNote.js'
+export class NormalHeadTraceNote extends TraceNote {
     sprites = {
         left: skin.sprites.normalTraceNoteLeft,
         middle: skin.sprites.normalTraceNoteMiddle,
@@ -23,8 +23,8 @@ export class NormalTailTraceNote extends TraceNote {
         linear: particle.effects.normalTraceNoteLinear,
         linearFallback: particle.effects.slideNoteLinear,
     }
-    windows = windows.slideEndTraceNote.normal
-    bucket = buckets.normalSlideEndTraceNote
+    windows = windows.slideTraceNote.normal
+    bucket = buckets.normalSlideTraceNote
     get slotEffect() {
         return archetypes.SlideSlotEffect
     }

@@ -24,7 +24,7 @@ export class TraceFlickNote extends FlickNote {
                 b: 1 + note.h,
                 t: 1 - note.h,
             }).copyTo(this.diamondLayout)
-            this.diamondZ = getZ(layer.note.tick, -this.targetTime, -Math.abs(this.import.lane))
+            this.diamondZ = getZ(layer.note.tick, -this.targetTime, this.import.lane, 0)
         }
     }
     touch() {
@@ -95,6 +95,8 @@ export class TraceFlickNote extends FlickNote {
                 this.flickExport('accuracyDiff', this.result.accuracy - this.windows.perfect.max)
                 this.result.accuracy = this.windows.perfect.max
             }
+            this.flick = true
+            this.flickExport('flickWarning', true)
         }
         this.result.bucket.index = this.bucket.index
         this.result.bucket.value = this.result.accuracy * 1000
