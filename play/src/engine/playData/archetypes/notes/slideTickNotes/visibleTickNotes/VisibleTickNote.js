@@ -12,7 +12,7 @@ import { scaledScreen } from '../../../../scaledScreen.js'
 import { getZ, layer } from '../../../../skin.js'
 import { TransientHiddenTickNote } from '../TransientHiddenTickNote.js'
 import { progress } from '../../../utils.js'
-export class VisibleSlideTickNote extends TransientHiddenTickNote {
+export class VisibleTickNote extends TransientHiddenTickNote {
     spriteLayout = this.entityMemory(Quad)
     z = this.entityMemory(Number)
     y = this.entityMemory(Number)

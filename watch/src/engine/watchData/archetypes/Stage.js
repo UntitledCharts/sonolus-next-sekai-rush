@@ -8,23 +8,8 @@ import { scaledScreen } from '../scaledScreen.js'
 import { layer, skin } from '../skin.js'
 import { archetypes } from './index.js'
 import { merge } from '../merge.js'
-export class Stage extends Archetype {
+export class Stage extends SpawnableArchetype({}) {
     preprocessOrder = 3
-    customCombo = this.defineSharedMemory({
-        value: Tuple(4, Number),
-        time: Number,
-        scaledTime: Number,
-        length: Number,
-        start: Number,
-        combo: Number,
-        judgment: DataType,
-        tail: Number,
-        ap: Boolean,
-        accuracy: Number,
-        fastLate: Number,
-    })
-    ap = this.entityMemory(Boolean)
-    cache = this.entityMemory(Tuple(32, Number))
     spawnTime() {
         return -999999
     }
@@ -80,7 +65,7 @@ export class Stage extends Archetype {
         const w = ((2048 / 1420) * 12) / 2
         const h = 1176 / 850
         const layout = new Rect({ l: -w, r: w, t: lane.t, b: lane.t + h })
-        skin.sprites.sekaiStage.draw(layout, layer.stage, !options.showLane ? 0 : 1)
+        skin.sprites.sekaiStageLane.draw(layout, layer.stage, !options.showLane ? 0 : 1)
         skin.sprites.sekaiStageCover.draw(
             layout,
             layer.stage - 0.01,
@@ -136,20 +121,5 @@ export class Stage extends Archetype {
                 }
             }
         }
-        if (options.hideCustom) return
-        archetypes.ComboNumber.spawn({})
-        if (options.customDamage && replay.isReplay) archetypes.Damage.spawn({})
-        if (options.customJudgment) {
-            archetypes.JudgmentText.spawn({})
-            if (options.fastLate && replay.isReplay) {
-                archetypes.JudgmentAccuracy.spawn({})
-            }
-        }
-        if (options.customCombo && (!options.auto || replay.isReplay)) {
-            archetypes.ComboLabel.spawn({})
-            archetypes.ComboNumberGlow.spawn({})
-            archetypes.ComboNumberEffect.spawn({})
-        }
-        merge.searching(this.cache, this.customCombo, this.ap)
     }
 }

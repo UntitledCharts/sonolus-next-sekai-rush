@@ -1,1 +1,1 @@
-export const updateSpawn = () => time.scaled
+export const updateSpawn = () => time.now

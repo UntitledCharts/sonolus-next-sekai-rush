@@ -5,7 +5,7 @@ import { particle } from '../../../../particle.js'
 import { skin } from '../../../../skin.js'
 import { archetypes } from '../../../index.js'
 import { SlideStartNote } from './SlideStartNote.js'
-export class NormalSlideStartNote extends SlideStartNote {
+export class NormalHeadTapNote extends SlideStartNote {
     sprites = {
         left: skin.sprites.slideNoteLeft,
         middle: skin.sprites.slideNoteMiddle,

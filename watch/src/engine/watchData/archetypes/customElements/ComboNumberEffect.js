@@ -7,21 +7,8 @@ export class ComboNumberEffect extends SpawnableArchetype({}) {
     check = this.entityMemory(Boolean)
     layout = this.entityMemory(Quad)
     z = this.entityMemory(Number)
-    customCombo = this.defineSharedMemory({
-        value: Tuple(4, Number),
-        time: Number,
-        scaledTime: Number,
-        length: Number,
-        start: Number,
-        combo: Number,
-        judgment: DataType,
-        tail: Number,
-        ap: Boolean,
-        accuracy: Number,
-        fastLate: Number,
-    })
     initialize() {
-        this.z = getZ(layer.judgment, 0, 0)
+        this.z = getZ(layer.judgment, 0, 0, 0)
     }
     spawnTime() {
         return -999999
@@ -30,10 +17,10 @@ export class ComboNumberEffect extends SpawnableArchetype({}) {
         return 999999
     }
     updateParallel() {
-        if (time.now < this.customCombo.get(this.customCombo.get(0).start).time) return
-        if (this.customCombo.get(this.head).combo == 0) return
-        const c = this.customCombo.get(this.head).combo
-        const t = this.customCombo.get(this.head).time
+        if (time.now < this.customMemory.get(this.customMemory.get(0).start).time) return
+        if (this.customMemory.get(this.head).combo == 0) return
+        const c = this.customMemory.get(this.head).combo
+        const t = this.customMemory.get(this.head).time
         if (c != 0) {
             const digits = [
                 Math.floor(c / 1000000) % 10,
@@ -60,7 +47,7 @@ export class ComboNumberEffect extends SpawnableArchetype({}) {
             const startX = centerX - totalWidth / 2
             comboNumberLayout.numberLayout(
                 this.head,
-                this.customCombo,
+                this.customMemory,
                 this.z,
                 digits,
                 digitCount,
@@ -77,5 +64,8 @@ export class ComboNumberEffect extends SpawnableArchetype({}) {
     }
     get head() {
         return archetypes.ComboNumber.searching.get(0).head
+    }
+    get customMemory() {
+        return archetypes.NormalTapNote.customCombo
     }
 }

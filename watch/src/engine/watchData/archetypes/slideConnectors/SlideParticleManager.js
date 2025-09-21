@@ -1,14 +1,14 @@
-import { particle } from '../../../particle'
-import { archetypes } from '../../index'
+import { particle } from '../../particle.js'
+import { archetypes } from '../index'
 export class SlideParticleManager extends SpawnableArchetype({
-    startRef: Number,
+    activeHeadRef: Number,
     t: Number,
 }) {
     spawnTime() {
-        return timeScaleChanges.at(this.spawnData.t).scaledTime
+        return this.spawnData.t
     }
     despawnTime() {
-        return timeScaleChanges.at(this.spawnData.t + 1).scaledTime
+        return this.spawnData.t + 1
     }
     updateSequential() {
         if (
@@ -26,6 +26,6 @@ export class SlideParticleManager extends SpawnableArchetype({
         this.startSharedMemory.noneMoveLinear = 0
     }
     get startSharedMemory() {
-        return archetypes.NormalSlideStartNote.sharedMemory.get(this.spawnData.startRef)
+        return archetypes.NormalHeadTapNote.sharedMemory.get(this.spawnData.activeHeadRef)
     }
 }

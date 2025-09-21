@@ -8,4 +8,5 @@ export default {
             minifyWhitespace: true,
         }
     },
+    workerCount: 6,
 }

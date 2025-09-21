@@ -11,6 +11,7 @@ export default {
             minifyWhitespace: true,
         }
     },
+    workerCount: 6,
     devServer(sonolus) {
         try {
             copyFileSync('./shared/src/level/bgm.mp3', './.dev/bgm.mp3')

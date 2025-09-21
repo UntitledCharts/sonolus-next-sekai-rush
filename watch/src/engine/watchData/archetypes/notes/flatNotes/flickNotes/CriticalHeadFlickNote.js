@@ -1,27 +1,29 @@
-import { windows } from '../../../../../../../../../shared/src/engine/data/windows.js'
-import { buckets } from '../../../../../buckets.js'
-import { effect } from '../../../../../effect.js'
-import { particle } from '../../../../../particle.js'
-import { skin } from '../../../../../skin.js'
-import { archetypes } from '../../../../index.js'
-import { TraceFlickNote } from './TraceFlickNote.js'
-import { options } from '../../../../../../configuration/options.js'
+import { windows } from '../../../../../../../../shared/src/engine/data/windows.js'
+import { buckets } from '../../../../buckets.js'
+import { effect } from '../../../../effect.js'
+import { particle } from '../../../../particle.js'
+import { skin } from '../../../../skin.js'
+import { archetypes } from '../../../index.js'
+import { FlickNote } from './FlickNote.js'
+import { options } from '../../../../../configuration/options.js'
 
-export class CriticalTraceFlickNote extends TraceFlickNote {
+export class CriticalHeadFlickNote extends FlickNote {
     sprites = {
-        left: skin.sprites.criticalTraceNoteLeft,
-        middle: skin.sprites.criticalTraceNoteMiddle,
-        right: skin.sprites.criticalTraceNoteRight,
-        diamond: skin.sprites.criticalTraceNoteDiamond,
-        fallback: skin.sprites.criticalTraceNoteFallback,
+        left: skin.sprites.criticalNoteLeft,
+        middle: skin.sprites.criticalNoteMiddle,
+        right: skin.sprites.criticalNoteRight,
+        fallback: skin.sprites.criticalNoteFallback,
     }
     clips = {
         perfect: effect.clips.criticalFlick,
         fallback: effect.clips.flickPerfect,
     }
     effects = {
-        circular: particle.effects.criticalNoteCircular,
-        linear: particle.effects.criticalNoteLinear,
+        circular: particle.effects.criticalFlickNoteCircular,
+        circularFallback: particle.effects.criticalNoteCircular,
+        linear: particle.effects.criticalFlickNoteLinear,
+        linearFallback: particle.effects.criticalNoteLinear,
+        slotEffects: particle.effects.slotEffectFlickYellow,
     }
     arrowSprites = {
         up: [
@@ -59,12 +61,17 @@ export class CriticalTraceFlickNote extends TraceFlickNote {
         fallback: skin.sprites.criticalArrowFallback,
     }
     directionalEffect = particle.effects.criticalNoteDirectional
-    windows = windows.traceFlickNote.critical
-    bucket = buckets.criticalTraceFlickNote
+    windows = windows.flickNote.critical
+    bucket = buckets.criticalFlickNote
     get slotEffect() {
-        return archetypes.CriticalSlotEffect
+        return archetypes.CriticalFlickSlotEffect
     }
-    playLaneEffects() {}
+    get slotGlowEffect() {
+        return archetypes.CriticalFlickSlotGlowEffect
+    }
+    playLaneEffects() {
+        // none
+    }
     preprocess() {
         super.preprocess()
         const lane = this.import.lane

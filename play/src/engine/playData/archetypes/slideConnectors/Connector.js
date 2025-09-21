@@ -126,6 +126,12 @@ export class Connector extends Guide {
         super.updateSequential()
         if (this.import.activeHeadRef <= 0) return
         if (time.now < this.headMemory.targetTime) return
+        let visualLane = 0
+        let visualSize = 0
+        ;({ lane: visualLane, size: visualSize } = this.getAttachedParams(time.now))
+        this.activeHeadMemory.activeConnectorInfo.visualLane = visualLane
+        this.activeHeadMemory.activeConnectorInfo.visualSize = visualSize
+        this.activeHeadMemory.activeConnectorInfo.kind = this.segmentHeadMemory.segmentKind
         if (this.visual === VisualType.Activated) {
             if (this.shouldPlayCircularEffect && !this.activeHeadMemory.circular)
                 this.spawnCircularEffect()
@@ -139,12 +145,6 @@ export class Connector extends Guide {
             if (this.shouldPlaySlotEffects && time.now >= this.activeHeadMemory.slotEffects)
                 this.spawnSlotEffects()
         }
-        let visualLane = 0
-        let visualSize = 0
-        ;({ lane: visualLane, size: visualSize } = this.getAttachedParams(time.now))
-        this.activeHeadMemory.activeConnectorInfo.visualLane = visualLane
-        this.activeHeadMemory.activeConnectorInfo.visualSize = visualSize
-        this.activeHeadMemory.activeConnectorInfo.kind = this.segmentHeadMemory.segmentKind
     }
     terminate() {
         if (this.import.activeHeadRef <= 0) return
@@ -345,20 +345,10 @@ export class Connector extends Guide {
     spawnLinearEffect() {
         const segmentKind = this.segmentHeadMemory.segmentKind
         switch (segmentKind) {
-            case kind.ActiveNormal:
+            case kind.ActiveNormal || kind.ActiveFakeNormal:
                 this.activeHeadMemory.linear = this.effects.normal.linear.spawn(new Quad(), 1, true)
                 break
-            case kind.ActiveFakeNormal:
-                this.activeHeadMemory.linear = this.effects.normal.linear.spawn(new Quad(), 1, true)
-                break
-            case kind.ActiveCritical:
-                this.activeHeadMemory.linear = this.effects.critical.linear.spawn(
-                    new Quad(),
-                    1,
-                    true,
-                )
-                break
-            case kind.ActiveFakeCritical:
+            case kind.ActiveCritical || kind.ActiveFakeCritical:
                 this.activeHeadMemory.linear = this.effects.critical.linear.spawn(
                     new Quad(),
                     1,
@@ -366,6 +356,23 @@ export class Connector extends Guide {
                 )
                 break
         }
+    }
+    updateLinearEffect() {
+        const lane = this.activeHeadMemory.activeConnectorInfo.visualLane
+        particle.effects.move(
+            this.activeHeadMemory.linear,
+            linearEffectLayout({
+                lane,
+                shear: 0,
+            }),
+        )
+    }
+    destroyLinearEffect() {
+        particle.effects.destroy(this.activeHeadMemory.linear)
+        archetypes.SlideParticleManager.spawn({
+            activeHeadRef: this.import.activeHeadRef,
+            function: 1,
+        })
     }
     spawnNoneMoveLinearEffect() {
         const lane = this.activeHeadMemory.activeConnectorInfo.visualLane
@@ -464,23 +471,6 @@ export class Connector extends Guide {
             }
         }
         this.activeHeadMemory.slotEffects = time.now + 0.2
-    }
-    updateLinearEffect() {
-        const lane = this.activeHeadMemory.activeConnectorInfo.visualLane
-        particle.effects.move(
-            this.activeHeadMemory.linear,
-            linearEffectLayout({
-                lane,
-                shear: 0,
-            }),
-        )
-    }
-    destroyLinearEffect() {
-        particle.effects.destroy(this.activeHeadMemory.linear)
-        archetypes.SlideParticleManager.spawn({
-            activeHeadRef: this.import.activeHeadRef,
-            function: 1,
-        })
     }
     renderGlow() {
         if (!options.slotEffectEnabled) return

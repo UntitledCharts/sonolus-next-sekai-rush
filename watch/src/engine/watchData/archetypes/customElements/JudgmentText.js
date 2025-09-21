@@ -8,21 +8,8 @@ export class JudgmentText extends SpawnableArchetype({}) {
     check = this.entityMemory(Boolean)
     layout = this.entityMemory(Quad)
     z = this.entityMemory(Number)
-    customCombo = this.defineSharedMemory({
-        value: Tuple(4, Number),
-        time: Number,
-        scaledTime: Number,
-        length: Number,
-        start: Number,
-        combo: Number,
-        judgment: DataType,
-        tail: Number,
-        ap: Boolean,
-        accuracy: Number,
-        fastLate: Number,
-    })
     initialize() {
-        this.z = getZ(layer.judgment, 0, 0)
+        this.z = getZ(layer.judgment, 0, 0, 0)
     }
     spawnTime() {
         return -999999
@@ -31,9 +18,9 @@ export class JudgmentText extends SpawnableArchetype({}) {
         return 999999
     }
     updateParallel() {
-        if (time.now < this.customCombo.get(this.customCombo.get(0).start).time) return
-        if (this.customCombo.get(this.head).time + 0.5 < time.now) return
-        const t = this.customCombo.get(this.head).time
+        if (time.now < this.customMemory.get(this.customMemory.get(0).start).time) return
+        if (this.customMemory.get(this.head).time + 0.5 < time.now) return
+        const t = this.customMemory.get(this.head).time
         const h = 0.09 * ui.configuration.judgment.scale
         const w = h * 27.3
         const centerX = 0
@@ -47,7 +34,7 @@ export class JudgmentText extends SpawnableArchetype({}) {
             b: centerY + (h * s) / 2,
         }).copyTo(this.layout)
         if (replay.isReplay) {
-            switch (this.customCombo.get(this.head).judgment) {
+            switch (this.customMemory.get(this.head).judgment) {
                 case Judgment.Perfect:
                     skin.sprites.perfect.draw(this.layout, this.z, a)
                     break
@@ -56,8 +43,8 @@ export class JudgmentText extends SpawnableArchetype({}) {
                     break
                 case Judgment.Good:
                     if (
-                        this.customCombo.get(this.head).accuracy >= 0.1083 ||
-                        this.customCombo.get(this.head).accuracy <= -0.1083
+                        this.customMemory.get(this.head).accuracy >= 0.1083 ||
+                        this.customMemory.get(this.head).accuracy <= -0.1083
                     )
                         skin.sprites.bad.draw(this.layout, this.z, a)
                     else skin.sprites.good.draw(this.layout, this.z, a)
@@ -73,5 +60,8 @@ export class JudgmentText extends SpawnableArchetype({}) {
     }
     get head() {
         return archetypes.ComboNumber.searching.get(0).head
+    }
+    get customMemory() {
+        return archetypes.NormalTapNote.customCombo
     }
 }

@@ -1,17 +1,17 @@
 import { ease } from '../../../../../../shared/src/engine/data/EaseType.js'
 import {
+    approach,
     approach2,
     progressCutoff,
     progressStart,
 } from '../../../../../../shared/src/engine/data/note.js'
-import { archetypes } from '../index.js'
 import { options } from '../../../configuration/options.js'
-import { getHitbox } from '../../lane.js'
 import { note } from '../../note.js'
-import { scaledScreen } from '../../scaledScreen.js'
-import { getZ, layer, skin } from '../../skin.js'
-import { disallowEmpty } from '../InputManager.js'
+import { getZ, layer } from '../../skin.js'
+import { archetypes } from '../index.js'
+import { skin } from '../../skin.js'
 import { progress } from '../utils.js'
+import { scaledScreen } from '../../scaledScreen.js'
 import { QuadLayout } from '../../../../../../shared/src/engine/data/utils.js'
 import { getAttached } from '../notes/slideTickNotes/utils.js'
 export var VisualType
@@ -61,7 +61,6 @@ export class Guide extends Archetype {
             black: skin.sprites.guideBlack,
         },
     }
-    leniency = 1
     import = this.defineImport({
         activeHeadRef: { name: 'activeHead', type: Number },
         activeTailRef: { name: 'activeTail', type: Number },
@@ -70,7 +69,9 @@ export class Guide extends Archetype {
         segmentHeadRef: { name: 'segmentHead', type: Number },
         segmentTailRef: { name: 'segmentTail', type: Number },
     })
+    initialized = this.entityMemory(Boolean)
     activeHead = this.entityMemory({
+        time: Number,
         scaledTime: Number,
     })
     activeTail = this.entityMemory({
@@ -101,8 +102,7 @@ export class Guide extends Archetype {
         start: Number,
         end: Number,
     })
-    hiddenTime = this.entityMemory(Number)
-    spawnTime = this.entityMemory(Number)
+    visualSpawnTime = this.entityMemory(Number)
     endTime = this.entityMemory(Number)
     inputTime = this.entityMemory({
         start: Number,
@@ -120,15 +120,14 @@ export class Guide extends Archetype {
         this.activeHead.scaledTime = this.activeHeadMemory.targetScaledTime
         this.visualTime.start = Math.min(this.headMemory.targetTime, this.tailMemory.targetTime)
         this.visualTime.end = Math.max(this.headMemory.targetTime, this.tailMemory.targetTime)
-        this.inputTime.start = this.visualTime.start + input.offset
-        this.inputTime.end = this.visualTime.end + input.offset
-        this.spawnTime = Math.min(
+        this.visualSpawnTime = Math.min(
             this.visualTime.start,
-            this.inputTime.start,
             this.headMemory.spawnTime,
             this.tailMemory.spawnTime,
         )
-        this.endTime = Math.max(this.visualTime.end, this.inputTime.end)
+        this.endTime = this.visualTime.end
+        debug.log(this.headImport.lane)
+        debug.log(this.tailImport.lane)
     }
     get activeHeadMemory() {
         return archetypes.NormalHeadTapNote.sharedMemory.get(this.import.activeHeadRef)
@@ -148,115 +147,87 @@ export class Guide extends Archetype {
     get tailMemory() {
         return archetypes.NormalHeadTapNote.sharedMemory.get(this.import.tailRef)
     }
-    spawnOrder() {
-        return this.spawnTime
+    get activeHeadImport() {
+        return archetypes.NormalHeadTapNote.import.get(this.import.activeHeadRef)
     }
-    shouldSpawn() {
-        return time.now >= this.spawnTime
+    get activeTailImport() {
+        return archetypes.NormalHeadTapNote.import.get(this.import.activeTailRef)
+    }
+    get segmentHeadImport() {
+        return archetypes.NormalHeadTapNote.import.get(this.import.segmentHeadRef)
+    }
+    get segmentTailImport() {
+        return archetypes.NormalHeadTapNote.import.get(this.import.segmentTailRef)
+    }
+    get headImport() {
+        return archetypes.NormalHeadTapNote.import.get(this.import.headRef)
+    }
+    get tailImport() {
+        return archetypes.NormalHeadTapNote.import.get(this.import.tailRef)
+    }
+    spawnTime() {
+        return this.visualSpawnTime
+    }
+    despawnTime() {
+        return this.endTime
     }
     initialize() {
-        this.head.l = this.headMemory.lane - this.headMemory.size
-        this.head.r = this.headMemory.lane + this.headMemory.size
-        this.tail.l = this.tailMemory.lane - this.tailMemory.size
-        this.tail.r = this.tailMemory.lane + this.tailMemory.size
-        if (options.hidden > 0)
-            this.hiddenTime = this.tail.scaledTime - note.duration * options.hidden
-        if (this.segmentHeadMemory.segmentKind == 0) this.z = 0
-        else if (this.segmentHeadMemory.segmentKind < 100)
+        if (this.initialized) return
+        this.initialized = true
+        this.globalInitialize()
+    }
+    updateParallel() {
+        if (this.segmentHeadImport.segmentKind < 100) this.updateVisualType()
+        this.renderConnector()
+    }
+    get useFallbackSprite() {
+        if (
+            this.segmentHeadImport.segmentKind == kind.ActiveNormal ||
+            this.segmentHeadImport.segmentKind == kind.ActiveFakeNormal
+        )
+            return !this.sprites.normal.normal.exists || !this.sprites.normal.active.exists
+        else if (
+            this.segmentHeadImport.segmentKind == kind.ActiveCritical ||
+            this.segmentHeadImport.segmentKind == kind.ActiveFakeCritical
+        )
+            return !this.sprites.critical.normal.exists || !this.sprites.critical.active.exists
+        else if (this.segmentHeadImport.segmentKind == kind.GuideGreen)
+            return !this.sprites.guide.green.exists
+        else if (this.segmentHeadImport.segmentKind == kind.GuideYellow)
+            return !this.sprites.guide.yellow.exists
+        else if (this.segmentHeadImport.segmentKind == kind.GuideBlack) {
+            return !this.sprites.guide.black.exists
+        } else if (this.segmentHeadImport.segmentKind == kind.GuideBlue) {
+            return !this.sprites.guide.blue.exists
+        } else if (this.segmentHeadImport.segmentKind == kind.GuideCyan) {
+            return !this.sprites.guide.cyan.exists
+        } else if (this.segmentHeadImport.segmentKind == kind.GuideNeutral) {
+            return !this.sprites.guide.neutral.exists
+        } else if (this.segmentHeadImport.segmentKind == kind.GuidePurple) {
+            return !this.sprites.guide.purple.exists
+        } else return !this.sprites.guide.red.exists
+    }
+    globalInitialize() {
+        this.activeHead.time = this.activeHeadMemory.targetTime
+        if (this.segmentHeadImport.segmentKind == 0) this.z = 0
+        else if (this.segmentHeadImport.segmentKind < 100)
             this.z = getZ(
                 layer.note.connector,
                 -this.segmentHeadMemory.targetTime,
-                this.segmentHeadMemory.lane,
+                this.segmentHeadImport.lane,
                 this.critical,
             )
         else
             this.z = getZ(
                 layer.note.guide,
                 -this.segmentHeadMemory.targetTime,
-                this.segmentHeadMemory.lane,
-                this.segmentHeadMemory.segmentKind - kind.GuideNeutral,
+                this.segmentHeadImport.lane,
+                this.segmentHeadImport.segmentKind - kind.GuideNeutral,
             )
     }
-    updateSequentialOrder = 1
-    updateSequential() {
-        if (time.now < this.headMemory.targetTime) return
-        if (this.import.activeHeadRef <= 0) return
-        let inputLane = 0
-        let inputSize = 0
-        ;({ lane: inputLane, size: inputSize } = this.getAttachedParams(time.now - input.offset))
-        this.activeHeadMemory.activeConnectorInfo.prevInputLane =
-            this.activeHeadMemory.activeConnectorInfo.inputLane
-        this.activeHeadMemory.activeConnectorInfo.prevInputSize =
-            this.activeHeadMemory.activeConnectorInfo.inputSize
-        this.activeHeadMemory.activeConnectorInfo.inputLane = inputLane
-        this.activeHeadMemory.activeConnectorInfo.inputSize = inputSize
-        const hitbox = getHitbox({
-            l: inputLane - inputSize,
-            r: inputLane + inputSize,
-            leniency: this.leniency,
-        })
-        for (const touch of touches) {
-            if (touch.ended) continue
-            if (!hitbox.contains(touch.position)) continue
-            if (this.segmentHeadMemory.segmentKind < 100) disallowEmpty(touch)
-            this.activeHeadMemory.lastActiveTime = time.now
-        }
-        if (this.segmentHeadMemory.segmentKind < 100) {
-            if (this.activeHeadMemory.lastActiveTime === time.now) {
-                if (this.activeHeadMemory.exportStartTime !== -1000) return
-                streams.set(this.import.activeHeadRef, time.now, 999999)
-                this.activeHeadMemory.exportStartTime = time.now
-            } else {
-                if (this.activeHeadMemory.exportStartTime === -1000) return
-                streams.set(
-                    this.import.activeHeadRef,
-                    this.activeHeadMemory.exportStartTime,
-                    time.now,
-                )
-                this.activeHeadMemory.exportStartTime = -1000
-            }
-        }
-    }
-    updateParallel() {
-        if (time.now >= this.endTime) {
-            this.despawn = true
-            return
-        }
-        if (time.now < this.visualTime.end) {
-            if (this.segmentHeadMemory.segmentKind < 100) this.updateVisualType()
-            this.renderConnector()
-        }
-    }
-    get useFallbackSprite() {
-        if (
-            this.segmentHeadMemory.segmentKind == kind.ActiveNormal ||
-            this.segmentHeadMemory.segmentKind == kind.ActiveFakeNormal
-        )
-            return !this.sprites.normal.normal.exists || !this.sprites.normal.active.exists
-        else if (
-            this.segmentHeadMemory.segmentKind == kind.ActiveCritical ||
-            this.segmentHeadMemory.segmentKind == kind.ActiveFakeCritical
-        )
-            return !this.sprites.critical.normal.exists || !this.sprites.critical.active.exists
-        else if (this.segmentHeadMemory.segmentKind == kind.GuideGreen)
-            return !this.sprites.guide.green.exists
-        else if (this.segmentHeadMemory.segmentKind == kind.GuideYellow)
-            return !this.sprites.guide.yellow.exists
-        else if (this.segmentHeadMemory.segmentKind == kind.GuideBlack) {
-            return !this.sprites.guide.black.exists
-        } else if (this.segmentHeadMemory.segmentKind == kind.GuideBlue) {
-            return !this.sprites.guide.blue.exists
-        } else if (this.segmentHeadMemory.segmentKind == kind.GuideCyan) {
-            return !this.sprites.guide.cyan.exists
-        } else if (this.segmentHeadMemory.segmentKind == kind.GuideNeutral) {
-            return !this.sprites.guide.neutral.exists
-        } else if (this.segmentHeadMemory.segmentKind == kind.GuidePurple) {
-            return !this.sprites.guide.purple.exists
-        } else return !this.sprites.guide.red.exists
-    }
     get critical() {
-        if (this.segmentHeadMemory.segmentKind > 100) return 0
-        switch (this.segmentHeadMemory.segmentKind) {
+        if (this.segmentHeadImport.segmentKind > 100) return 0
+        switch (this.segmentHeadImport.segmentKind) {
             case kind.ActiveNormal || kind.ActiveFakeNormal:
                 return 10
             default:
@@ -264,18 +235,26 @@ export class Guide extends Archetype {
         }
     }
     updateVisualType() {
+        if (!replay.isReplay) {
+            this.visual =
+                time.now >= this.activeHead.time ? VisualType.Activated : VisualType.Waiting
+            return
+        }
+        const startTime = streams.getPreviousKey(this.import.activeHeadRef, time.now)
+        if (startTime < time.now) {
+            const endTime = streams.getValue(this.import.activeHeadRef, startTime)
+            if (time.now < endTime) {
+                this.visual = VisualType.Activated
+                return
+            }
+        }
         this.visual =
-            this.activeHeadMemory.lastActiveTime === time.now
-                ? VisualType.Activated
-                : time.now >=
-                    this.activeHeadMemory.targetTime +
-                        archetypes.NormalTapNote.windows.good.max +
-                        input.offset
-                  ? VisualType.NotActivated
-                  : VisualType.Waiting
+            time.now >= this.activeHead.time + this.activeHeadMemory.windows + input.offset
+                ? VisualType.NotActivated
+                : VisualType.Waiting
     }
     renderConnector() {
-        if (time.now >= this.tailMemory.targetTime) return
+        if (time.now >= this.tailMemory.targetTime + time.delta) return
         const headAlpha = Math.remapClamped(
             this.segmentHeadMemory.targetTime,
             this.segmentTailMemory.targetTime,
@@ -293,12 +272,12 @@ export class Guide extends Archetype {
         let startProgress = 0
         let headProgress = 0
         const tailProgress = progress(
-            this.tailMemory.isAttached,
-            this.tailMemory.attachHead,
-            this.tailMemory.attachTail,
+            this.tailImport.isAttached,
+            this.tailImport.attachHead,
+            this.tailImport.attachTail,
             this.tailMemory.targetTime,
             this.tail.scaledTime,
-            this.tailMemory.timeScaleGroup,
+            this.tailImport.timeScaleGroup,
         )
         if (time.now >= this.headMemory.targetTime) {
             const headFrac = Math.unlerpClamped(
@@ -310,31 +289,31 @@ export class Guide extends Archetype {
             startProgress = Math.clamp(1, progressStart, progressCutoff)
         } else {
             headProgress = progress(
-                this.headMemory.isAttached,
-                this.headMemory.attachHead,
-                this.headMemory.attachTail,
+                this.headImport.isAttached,
+                this.headImport.attachHead,
+                this.headImport.attachTail,
                 this.headMemory.targetTime,
                 this.head.scaledTime,
-                this.headMemory.timeScaleGroup,
+                this.headImport.timeScaleGroup,
             )
             startProgress = Math.clamp(headProgress, progressStart, progressCutoff)
         }
         const endProgress = Math.clamp(tailProgress, progressStart, progressCutoff)
         const startFrac = Math.unlerpClamped(headProgress, tailProgress, startProgress)
         const endFrac = Math.unlerpClamped(headProgress, tailProgress, endProgress)
-        const easedStartFrac = ease(this.headMemory.connectorEase, startFrac)
-        const easedEndFrac = ease(this.headMemory.connectorEase, endFrac)
+        const easedStartFrac = ease(this.headImport.connectorEase, startFrac)
+        const easedEndFrac = ease(this.headImport.connectorEase, endFrac)
         const startTravel = approach2(startProgress)
         const endTravel = approach2(endProgress)
-        const startLane = Math.lerp(this.headMemory.lane, this.tailMemory.lane, easedStartFrac)
-        const endLane = Math.lerp(this.headMemory.lane, this.tailMemory.lane, easedEndFrac)
+        const startLane = Math.lerp(this.headImport.lane, this.tailImport.lane, easedStartFrac)
+        const endLane = Math.lerp(this.headImport.lane, this.tailImport.lane, easedEndFrac)
         const startSize = Math.max(
             1e-3,
-            Math.lerp(this.headMemory.size, this.tailMemory.size, easedStartFrac),
+            Math.lerp(this.headImport.size, this.tailImport.size, easedStartFrac),
         )
         const endSize = Math.max(
             1e-3,
-            Math.lerp(this.headMemory.size, this.tailMemory.size, easedEndFrac),
+            Math.lerp(this.headImport.size, this.tailImport.size, easedEndFrac),
         )
         const startAlpha = Math.lerp(headAlpha, tailAlpha, startFrac)
         const endAlpha = Math.lerp(headAlpha, tailAlpha, endFrac)
@@ -343,14 +322,14 @@ export class Guide extends Archetype {
             [
                 startLane - startSize,
                 endLane - endSize,
-                this.headMemory.lane - this.headMemory.size,
-                this.tailMemory.lane - this.tailMemory.size,
+                this.headImport.lane - this.headImport.size,
+                this.tailImport.lane - this.tailImport.size,
             ],
             [
                 startLane + startSize,
                 endLane + endSize,
-                this.headMemory.lane + this.headMemory.size,
-                this.tailMemory.lane + this.tailMemory.size,
+                this.headImport.lane + this.headImport.size,
+                this.tailImport.lane + this.tailImport.size,
             ],
         ]) {
             const startRef = new Vec({
@@ -366,7 +345,7 @@ export class Guide extends Archetype {
                 const frac = Math.lerp(startFrac, endFrac, r)
                 const progress = Math.lerp(startProgress, endProgress, r)
                 const travel = approach2(progress)
-                const lane = Math.lerp(hl, tl, ease(this.headMemory.connectorEase, frac))
+                const lane = Math.lerp(hl, tl, ease(this.headImport.connectorEase, frac))
                 const pos = new Vec({
                     x: lane * travel * scaledScreen.w,
                     y: travel * scaledScreen.h + scaledScreen.t2,
@@ -418,16 +397,16 @@ export class Guide extends Archetype {
             const nextProgress = Math.lerp(startProgress, endProgress, i / segmentCount)
             let nextTravel = approach2(nextProgress)
             let nextLane = Math.lerp(
-                this.headMemory.lane,
-                this.tailMemory.lane,
-                ease(this.headMemory.connectorEase, nextFrac),
+                this.headImport.lane,
+                this.tailImport.lane,
+                ease(this.headImport.connectorEase, nextFrac),
             )
             let nextSize = Math.max(
                 1e-3,
                 Math.lerp(
-                    this.headMemory.size,
-                    this.tailMemory.size,
-                    ease(this.headMemory.connectorEase, nextFrac),
+                    this.headImport.size,
+                    this.tailImport.size,
+                    ease(this.headImport.connectorEase, nextFrac),
                 ),
             )
             const nextAlpha = Math.lerp(headAlpha, tailAlpha, nextFrac)
@@ -437,7 +416,7 @@ export class Guide extends Archetype {
                 nextFrac,
             )
             let alpha = 0
-            if (this.segmentHeadMemory.segmentKind > 100) alpha = options.guideAlpha
+            if (this.segmentHeadImport.segmentKind > 100) alpha = options.guideAlpha
             else alpha = options.connectorAlpha
             const a = ((lastAlpha + nextAlpha) / 2) * alpha
             if (lastTravel < nextTravel) {
@@ -465,27 +444,24 @@ export class Guide extends Archetype {
     }
     getAttachedParams(targetTime) {
         return getAttached(
-            this.headMemory.connectorEase,
-            this.headMemory.lane,
-            this.headMemory.size,
+            this.headImport.connectorEase,
+            this.headImport.lane,
+            this.headImport.size,
             this.headMemory.targetTime,
-            this.tailMemory.lane,
-            this.tailMemory.size,
+            this.tailImport.lane,
+            this.tailImport.size,
             this.tailMemory.targetTime,
             targetTime,
         )
     }
-    ease(s) {
-        return ease(this.headMemory.connectorEase, s)
-    }
     drawConnector(layout, a) {
         const normalA =
             (Math.cos((time.now - this.segmentHeadMemory.targetTime) * 2 * Math.PI) + 1) / 2
-        if (options.connectorAnimation && this.segmentHeadMemory.segmentKind < 100) {
+        if (options.connectorAnimation && this.segmentHeadImport.segmentKind < 100) {
             if (this.visual === VisualType.NotActivated) a *= 0.5
             if (
-                this.segmentHeadMemory.segmentKind == kind.ActiveNormal ||
-                this.segmentHeadMemory.segmentKind == kind.ActiveFakeNormal
+                this.segmentHeadImport.segmentKind == kind.ActiveNormal ||
+                this.segmentHeadImport.segmentKind == kind.ActiveFakeNormal
             ) {
                 this.sprites.normal.normal.draw(
                     layout,
@@ -494,8 +470,8 @@ export class Guide extends Archetype {
                 )
                 this.sprites.normal.active.draw(layout, this.z, a * 0.9 * (1 - normalA))
             } else if (
-                this.segmentHeadMemory.segmentKind == kind.ActiveCritical ||
-                this.segmentHeadMemory.segmentKind == kind.ActiveFakeCritical
+                this.segmentHeadImport.segmentKind == kind.ActiveCritical ||
+                this.segmentHeadImport.segmentKind == kind.ActiveFakeCritical
             ) {
                 this.sprites.critical.normal.draw(
                     layout,
@@ -504,20 +480,23 @@ export class Guide extends Archetype {
                 )
                 this.sprites.critical.active.draw(layout, this.z, a * 0.9 * (1 - normalA))
             }
-        } else if (this.segmentHeadMemory.segmentKind == kind.GuideGreen) {
+        } else if (this.segmentHeadImport.segmentKind == kind.GuideGreen) {
             this.sprites.guide.green.draw(layout, this.z, a)
-        } else if (this.segmentHeadMemory.segmentKind == kind.GuideYellow) {
+        } else if (this.segmentHeadImport.segmentKind == kind.GuideYellow) {
             this.sprites.guide.yellow.draw(layout, this.z, a)
-        } else if (this.segmentHeadMemory.segmentKind == kind.GuideBlack) {
+        } else if (this.segmentHeadImport.segmentKind == kind.GuideBlack) {
             this.sprites.guide.black.draw(layout, this.z, a)
-        } else if (this.segmentHeadMemory.segmentKind == kind.GuideBlue) {
+        } else if (this.segmentHeadImport.segmentKind == kind.GuideBlue) {
             this.sprites.guide.blue.draw(layout, this.z, a)
-        } else if (this.segmentHeadMemory.segmentKind == kind.GuideCyan) {
+        } else if (this.segmentHeadImport.segmentKind == kind.GuideCyan) {
             this.sprites.guide.cyan.draw(layout, this.z, a)
-        } else if (this.segmentHeadMemory.segmentKind == kind.GuideNeutral) {
+        } else if (this.segmentHeadImport.segmentKind == kind.GuideNeutral) {
             this.sprites.guide.neutral.draw(layout, this.z, a)
-        } else if (this.segmentHeadMemory.segmentKind == kind.GuidePurple) {
+        } else if (this.segmentHeadImport.segmentKind == kind.GuidePurple) {
             this.sprites.guide.purple.draw(layout, this.z, a)
         } else this.sprites.guide.red.draw(layout, this.z, a)
+    }
+    ease(s) {
+        return ease(this.headImport.connectorEase, s)
     }
 }

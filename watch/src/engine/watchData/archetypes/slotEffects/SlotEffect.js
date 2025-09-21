@@ -10,10 +10,10 @@ export class SlotEffect extends SpawnableArchetype({
     layout = this.entityMemory(Quad)
     z = this.entityMemory(Number)
     spawnTime() {
-        return timeScaleChanges.at(this.spawnData.startTime).scaledTime
+        return this.spawnData.startTime
     }
     despawnTime() {
-        return timeScaleChanges.at(this.spawnData.startTime + 0.5).scaledTime
+        return this.spawnData.startTime + 0.5
     }
     initialize() {
         this.endTime = this.spawnData.startTime + 0.5
@@ -23,7 +23,7 @@ export class SlotEffect extends SpawnableArchetype({
             b: 1 + note.h,
             t: 1 - note.h,
         }).copyTo(this.layout)
-        this.z = getZ(layer.slotEffect, -this.spawnData.startTime, -Math.abs(this.spawnData.lane))
+        this.z = getZ(layer.slotEffect, -this.spawnData.startTime, this.spawnData.lane, 0)
     }
     updateParallel() {
         if (time.now < this.spawnData.startTime) return

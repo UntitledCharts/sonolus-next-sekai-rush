@@ -6,8 +6,8 @@ import { effect } from '../../../../effect.js'
 import { particle } from '../../../../particle.js'
 import { skin } from '../../../../skin.js'
 import { archetypes } from '../../../index.js'
-import { SlideStartNote } from './SlideStartNote.js'
-export class CriticalSlideStartNote extends SlideStartNote {
+import { FlatNote } from '../FlatNote.js'
+export class CriticalTapNote extends FlatNote {
     sprites = {
         left: skin.sprites.criticalNoteLeft,
         middle: skin.sprites.criticalNoteMiddle,
@@ -15,22 +15,21 @@ export class CriticalSlideStartNote extends SlideStartNote {
         fallback: skin.sprites.criticalNoteFallback,
     }
     clips = {
-        perfect: effect.clips.normalPerfect,
+        perfect: effect.clips.criticalTap,
+        fallback: effect.clips.normalPerfect,
     }
     effects = {
-        circular: particle.effects.criticalSlideCircular,
-        circularFallback: particle.effects.criticalNoteCircular,
-        linear: particle.effects.criticalSlideLinear,
-        linearFallback: particle.effects.criticalNoteLinear,
-        slotEffects: particle.effects.slotEffectSlideTapYellow,
+        circular: particle.effects.criticalNoteCircular,
+        linear: particle.effects.criticalNoteLinear,
+        slotEffects: particle.effects.slotEffectYellow,
     }
-    windows = windows.slideStartNote.critical
-    bucket = buckets.criticalSlideStartNote
+    windows = windows.tapNote.critical
+    bucket = buckets.criticalTapNote
     get slotEffect() {
-        return archetypes.CriticalSlideSlotEffect
+        return archetypes.CriticalSlotEffect
     }
     get slotGlowEffect() {
-        return archetypes.CriticalSlideNoteSlotGlowEffect
+        return archetypes.CriticalSlotGlowEffect
     }
     playLaneEffects() {
         if (particle.effects.criticalLane.exists) {

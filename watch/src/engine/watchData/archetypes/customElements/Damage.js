@@ -8,21 +8,8 @@ export class Damage extends SpawnableArchetype({}) {
     check = this.entityMemory(Boolean)
     z = this.entityMemory(Number)
     missTime = this.entityMemory(Number)
-    customCombo = this.defineSharedMemory({
-        value: Tuple(4, Number),
-        time: Number,
-        scaledTime: Number,
-        length: Number,
-        start: Number,
-        combo: Number,
-        judgment: DataType,
-        tail: Number,
-        ap: Boolean,
-        accuracy: Number,
-        fastLate: Number,
-    })
     initialize() {
-        this.z = getZ(layer.damage, 0, 0)
+        this.z = getZ(layer.damage, 0, 0, 0)
         this.missTime = -1
     }
     spawnTime() {
@@ -32,10 +19,10 @@ export class Damage extends SpawnableArchetype({}) {
         return 999999
     }
     updateParallel() {
-        if (this.customCombo.get(this.head).judgment == Judgment.Miss) {
-            this.missTime = this.customCombo.get(this.head).time
+        if (this.customMemory.get(this.head).judgment == Judgment.Miss) {
+            this.missTime = this.customMemory.get(this.head).time
         }
-        if (time.now < this.customCombo.get(this.customCombo.get(0).start).time) return
+        if (time.now < this.customMemory.get(this.customMemory.get(0).start).time) return
         if (this.missTime + 0.35 < time.now) return
         if (this.missTime == -1) return
         const t = Math.unlerp(this.missTime, this.missTime + 0.35, time.now)
@@ -71,5 +58,8 @@ export class Damage extends SpawnableArchetype({}) {
     }
     get head() {
         return archetypes.ComboNumber.searching.get(0).head
+    }
+    get customMemory() {
+        return archetypes.NormalTapNote.customCombo
     }
 }

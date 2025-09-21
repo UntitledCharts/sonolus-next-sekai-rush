@@ -1,16 +1,17 @@
-import { windows } from '../../../../../../../../shared/src/engine/data/windows.js'
-import { buckets } from '../../../../buckets.js'
-import { effect } from '../../../../effect.js'
-import { particle } from '../../../../particle.js'
-import { skin } from '../../../../skin.js'
-import { archetypes } from '../../../index.js'
-import { FlickNote } from './FlickNote.js'
-export class NormalFlickNote extends FlickNote {
+import { windows } from '../../../../../../../../../shared/src/engine/data/windows.js'
+import { buckets } from '../../../../../buckets.js'
+import { effect } from '../../../../../effect.js'
+import { particle } from '../../../../../particle.js'
+import { skin } from '../../../../../skin.js'
+import { archetypes } from '../../../../index.js'
+import { TraceFlickNote } from './TraceFlickNote.js'
+export class NormalTailTraceFlickNote extends TraceFlickNote {
     sprites = {
-        left: skin.sprites.flickNoteLeft,
-        middle: skin.sprites.flickNoteMiddle,
-        right: skin.sprites.flickNoteRight,
-        fallback: skin.sprites.flickNoteFallback,
+        left: skin.sprites.traceFlickNoteLeft,
+        middle: skin.sprites.traceFlickNoteMiddle,
+        right: skin.sprites.traceFlickNoteRight,
+        diamond: skin.sprites.traceFlickNoteDiamond,
+        fallback: skin.sprites.traceFlickNoteFallback,
     }
     clips = {
         perfect: effect.clips.flickPerfect,
@@ -20,7 +21,6 @@ export class NormalFlickNote extends FlickNote {
     effects = {
         circular: particle.effects.flickNoteCircular,
         linear: particle.effects.flickNoteLinear,
-        slotEffects: particle.effects.slotEffectFlickRed,
     }
     arrowSprites = {
         up: [
@@ -58,15 +58,12 @@ export class NormalFlickNote extends FlickNote {
         fallback: skin.sprites.flickArrowFallback,
     }
     directionalEffect = particle.effects.flickNoteDirectional
-    windows = windows.flickNote.normal
-    bucket = buckets.normalFlickNote
+    windows = windows.traceFlickNote.normal
+    bucket = buckets.normalTraceFlickNote
     get slotEffect() {
         return archetypes.FlickSlotEffect
     }
     get slotGlowEffect() {
         return archetypes.FlickSlotGlowEffect
-    }
-    playLaneEffects() {
-        // removed
     }
 }

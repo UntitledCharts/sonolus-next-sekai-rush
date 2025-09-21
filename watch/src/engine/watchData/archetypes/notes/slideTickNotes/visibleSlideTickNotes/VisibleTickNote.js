@@ -1,4 +1,9 @@
-import { approach } from '../../../../../../../../shared/src/engine/data/note.js'
+import {
+    approach,
+    approach2,
+    progressCutoff,
+    progressStart,
+} from '../../../../../../../../shared/src/engine/data/note.js'
 import { perspectiveLayout } from '../../../../../../../../shared/src/engine/data/utils.js'
 import { options } from '../../../../../configuration/options.js'
 import { sfxDistance } from '../../../../effect.js'
@@ -6,19 +11,16 @@ import { note } from '../../../../note.js'
 import { flatEffectLayout } from '../../../../particle.js'
 import { scaledScreen } from '../../../../scaledScreen.js'
 import { getZ, layer } from '../../../../skin.js'
-import { SlideTickNote } from '../SlideTickNote.js'
-export class VisibleSlideTickNote extends SlideTickNote {
-    visualTime = this.entityMemory(Range)
+import { progress } from '../../../utils.js'
+import { TransientHiddenTickNote } from '../TransientHiddenTickNote.js'
+export class VisibleTickNote extends TransientHiddenTickNote {
     hiddenTime = this.entityMemory(Number)
     initialized = this.entityMemory(Boolean)
     spriteLayout = this.entityMemory(Quad)
+    progress = this.entityMemory(Number)
     z = this.entityMemory(Number)
-    preprocessOrder = 0.2
     preprocess() {
         super.preprocess()
-        this.visualTime.copyFrom(
-            Range.l.mul(note.duration).add(timeScaleChanges.at(this.targetTime).scaledTime),
-        )
         if (options.sfxEnabled) {
             if (replay.isReplay && !options.autoSFX) {
                 this.scheduleReplaySFX()
@@ -28,10 +30,10 @@ export class VisibleSlideTickNote extends SlideTickNote {
         }
     }
     spawnTime() {
-        return this.visualTime.min
+        return this.visualSpawnTime
     }
     despawnTime() {
-        return this.visualTime.max
+        return this.sharedMemory.hitTime
     }
     initialize() {
         if (this.initialized) return
@@ -39,7 +41,6 @@ export class VisibleSlideTickNote extends SlideTickNote {
         this.globalInitialize()
     }
     updateParallel() {
-        if (options.hidden > 0 && time.scaled > this.hiddenTime) return
         this.render()
     }
     terminate() {
@@ -53,8 +54,6 @@ export class VisibleSlideTickNote extends SlideTickNote {
         return !this.clips.tick.exists
     }
     globalInitialize() {
-        if (options.hidden > 0)
-            this.hiddenTime = this.visualTime.max - note.duration * options.hidden
         const b = 1 + note.h
         const t = 1 - note.h
         if (this.useFallbackSprite) {
@@ -72,7 +71,7 @@ export class VisibleSlideTickNote extends SlideTickNote {
                 .toQuad()
                 .copyTo(this.spriteLayout)
         }
-        this.z = getZ(layer.note.tick, -this.targetTime, -Math.abs(this.import.lane))
+        this.z = getZ(layer.note.tick, -this.targetTime, this.import.lane, 0)
     }
     scheduleSFX() {
         if (this.useFallbackClip) {
@@ -86,7 +85,21 @@ export class VisibleSlideTickNote extends SlideTickNote {
         this.scheduleSFX()
     }
     render() {
-        const y = approach(this.visualTime.min, this.visualTime.max, time.scaled)
+        this.progress = progress(
+            this.import.isAttached,
+            this.import.attachHead,
+            this.import.attachTail,
+            this.targetTime,
+            this.sharedMemory.targetScaledTime,
+            this.import.timeScaleGroup,
+        )
+        if (progressStart > this.progress || this.progress > progressCutoff) return
+        //const travel = approach2(progressed)
+        const y = approach2(this.progress) /*approach(
+                    this.sharedMemory.visualStartTime,
+                    this.endTime,
+                    timeToScaledTime(time.now, this.import.timeScaleGroup),
+                )*/
         if (this.useFallbackSprite) {
             this.sprites.fallback.draw(this.spriteLayout.mul(y), this.z, 1)
         } else {

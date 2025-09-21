@@ -20,21 +20,23 @@ export const merge = {
                 archetypeIndex == archetypes.CriticalTraceNote.index ||
                 archetypeIndex == archetypes.NormalTraceFlickNote.index ||
                 archetypeIndex == archetypes.CriticalTraceFlickNote.index ||
-                archetypeIndex == archetypes.NormalSlideTraceNote.index ||
-                archetypeIndex == archetypes.CriticalSlideTraceNote.index ||
-                archetypeIndex == archetypes.NormalSlideStartNote.index ||
-                archetypeIndex == archetypes.CriticalSlideStartNote.index ||
-                archetypeIndex == archetypes.NormalSlideEndNote.index ||
-                archetypeIndex == archetypes.CriticalSlideEndNote.index ||
-                archetypeIndex == archetypes.NormalSlideEndTraceNote.index ||
-                archetypeIndex == archetypes.CriticalSlideEndTraceNote.index ||
-                archetypeIndex == archetypes.CriticalSlideEndFlickNote.index ||
-                archetypeIndex == archetypes.NormalSlideEndFlickNote.index ||
-                archetypeIndex == archetypes.NormalSlideTickNote.index ||
-                archetypeIndex == archetypes.CriticalSlideTickNote.index ||
-                archetypeIndex == archetypes.HiddenSlideTickNote.index ||
-                archetypeIndex == archetypes.NormalAttachedSlideTickNote.index ||
-                archetypeIndex == archetypes.CriticalAttachedSlideTickNote.index
+                archetypeIndex == archetypes.NormalHeadTapNote.index ||
+                archetypeIndex == archetypes.CriticalHeadTapNote.index ||
+                archetypeIndex == archetypes.NormalHeadTraceNote.index ||
+                archetypeIndex == archetypes.CriticalHeadTraceNote.index ||
+                archetypeIndex == archetypes.NormalHeadTraceFlickNote.index ||
+                archetypeIndex == archetypes.CriticalHeadTraceFlickNote.index ||
+                archetypeIndex == archetypes.NormalTailFlickNote.index ||
+                archetypeIndex == archetypes.CriticalTailFlickNote.index ||
+                archetypeIndex == archetypes.NormalTailTraceNote.index ||
+                archetypeIndex == archetypes.CriticalTailTraceNote.index ||
+                archetypeIndex == archetypes.NormalTailTraceFlickNote.index ||
+                archetypeIndex == archetypes.CriticalTailTraceFlickNote.index ||
+                archetypeIndex == archetypes.NormalTailReleaseNote.index ||
+                archetypeIndex == archetypes.CriticalTailReleaseNote.index ||
+                archetypeIndex == archetypes.NormalTickNote.index ||
+                archetypeIndex == archetypes.CriticalTickNote.index ||
+                archetypeIndex == archetypes.TransientHiddenTickNote.index
             ) {
                 lineLength += 1
                 customCombo.get(ii).value.set(0, next)

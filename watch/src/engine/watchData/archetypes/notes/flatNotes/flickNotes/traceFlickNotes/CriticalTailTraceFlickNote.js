@@ -7,7 +7,7 @@ import { archetypes } from '../../../../index.js'
 import { TraceFlickNote } from './TraceFlickNote.js'
 import { options } from '../../../../../../configuration/options.js'
 
-export class CriticalTraceFlickNote extends TraceFlickNote {
+export class CriticalTailTraceFlickNote extends TraceFlickNote {
     sprites = {
         left: skin.sprites.criticalTraceNoteLeft,
         middle: skin.sprites.criticalTraceNoteMiddle,
@@ -64,7 +64,9 @@ export class CriticalTraceFlickNote extends TraceFlickNote {
     get slotEffect() {
         return archetypes.CriticalSlotEffect
     }
-    playLaneEffects() {}
+    playLaneEffects() {
+        //None
+    }
     preprocess() {
         super.preprocess()
         const lane = this.import.lane

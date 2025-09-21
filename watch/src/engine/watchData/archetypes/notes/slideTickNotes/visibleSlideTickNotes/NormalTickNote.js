@@ -1,8 +1,8 @@
 import { effect } from '../../../../effect.js'
 import { particle } from '../../../../particle.js'
 import { skin } from '../../../../skin.js'
-import { VisibleSlideTickNote } from './VisibleSlideTickNote.js'
-export class NormalSlideTickNote extends VisibleSlideTickNote {
+import { VisibleTickNote } from './VisibleTickNote.js'
+export class NormalTickNote extends VisibleTickNote {
     sprites = {
         tick: skin.sprites.normalSlideTickNote,
         fallback: skin.sprites.normalSlideTickNoteFallback,

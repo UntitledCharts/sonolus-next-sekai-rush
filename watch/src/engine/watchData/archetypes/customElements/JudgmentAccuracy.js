@@ -8,19 +8,6 @@ export class JudgmentAccuracy extends SpawnableArchetype({}) {
     z = this.entityMemory(Number)
     accuracy = this.entityMemory(Number)
     accuracyTime = this.entityMemory(Number)
-    customCombo = this.defineSharedMemory({
-        value: Tuple(4, Number),
-        time: Number,
-        scaledTime: Number,
-        length: Number,
-        start: Number,
-        combo: Number,
-        judgment: DataType,
-        tail: Number,
-        ap: Boolean,
-        accuracy: Number,
-        fastLate: Number,
-    })
     spawnTime() {
         return -999999
     }
@@ -28,14 +15,14 @@ export class JudgmentAccuracy extends SpawnableArchetype({}) {
         return 999999
     }
     initialize() {
-        this.z = getZ(layer.judgment, 0, 0)
+        this.z = getZ(layer.judgment, 0, 0, 0)
     }
     updateParallel() {
-        if (this.customCombo.get(this.head).fastLate != 0) {
-            this.accuracyTime = this.customCombo.get(this.head).time
-            this.accuracy = this.customCombo.get(this.head).fastLate
+        if (this.customMemory.get(this.head).fastLate != 0) {
+            this.accuracyTime = this.customMemory.get(this.head).time
+            this.accuracy = this.customMemory.get(this.head).fastLate
         }
-        if (time.now < this.customCombo.get(this.customCombo.get(0).start).time) return
+        if (time.now < this.customMemory.get(this.customMemory.get(0).start).time) return
         if (this.accuracyTime + 0.5 < time.now) return
         const h = 0.054 * ui.configuration.judgment.scale
         const w = h * 23.6
@@ -54,5 +41,8 @@ export class JudgmentAccuracy extends SpawnableArchetype({}) {
     }
     get head() {
         return archetypes.ComboNumber.searching.get(0).head
+    }
+    get customMemory() {
+        return archetypes.NormalTapNote.customCombo
     }
 }

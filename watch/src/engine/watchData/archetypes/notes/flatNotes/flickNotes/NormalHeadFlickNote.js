@@ -5,7 +5,7 @@ import { particle } from '../../../../particle.js'
 import { skin } from '../../../../skin.js'
 import { archetypes } from '../../../index.js'
 import { FlickNote } from './FlickNote.js'
-export class NormalFlickNote extends FlickNote {
+export class NormalHeadFlickNote extends FlickNote {
     sprites = {
         left: skin.sprites.flickNoteLeft,
         middle: skin.sprites.flickNoteMiddle,

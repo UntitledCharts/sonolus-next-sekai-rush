@@ -5,7 +5,7 @@ import { particle } from '../../../../particle.js'
 import { skin } from '../../../../skin.js'
 import { archetypes } from '../../../index.js'
 import { FlickNote } from './FlickNote.js'
-export class NormalSlideEndFlickNote extends FlickNote {
+export class NormalTailFlickNote extends FlickNote {
     sprites = {
         left: skin.sprites.flickNoteLeft,
         middle: skin.sprites.flickNoteMiddle,
@@ -38,6 +38,22 @@ export class NormalSlideEndFlickNote extends FlickNote {
             skin.sprites.flickArrowLeft4,
             skin.sprites.flickArrowLeft5,
             skin.sprites.flickArrowLeft6,
+        ],
+        down: [
+            skin.sprites.flickArrowDown1,
+            skin.sprites.flickArrowDown2,
+            skin.sprites.flickArrowDown3,
+            skin.sprites.flickArrowDown4,
+            skin.sprites.flickArrowDown5,
+            skin.sprites.flickArrowDown6,
+        ],
+        downLeft: [
+            skin.sprites.flickArrowDownLeft1,
+            skin.sprites.flickArrowDownLeft2,
+            skin.sprites.flickArrowDownLeft3,
+            skin.sprites.flickArrowDownLeft4,
+            skin.sprites.flickArrowDownLeft5,
+            skin.sprites.flickArrowDownLeft6,
         ],
         fallback: skin.sprites.flickArrowFallback,
     }

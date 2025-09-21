@@ -3,7 +3,9 @@ import { particle } from '../particle.js'
 import { scaledScreen } from '../scaledScreen.js'
 import { skin } from '../skin.js'
 import { archetypes } from './index.js'
+import { merge } from '../merge.js'
 export class Initialization extends Archetype {
+    preprocessOrder = 1
     preprocess() {
         const targetAspectRatio = 16 / 9
         const stage = {
@@ -25,6 +27,9 @@ export class Initialization extends Archetype {
         scaledScreen.r = screen.r / w
         scaledScreen.b = screen.b / (b - t)
         scaledScreen.t = screen.t / (b - t)
+        scaledScreen.t2 = t
+        scaledScreen.w = w
+        scaledScreen.h = b - t
         scaledScreen.wToH = w / (t - b)
         const transform = Mat.identity.scale(w, b - t).translate(0, t)
         skin.transform.set(transform)
@@ -141,9 +146,33 @@ export class Initialization extends Archetype {
             horizontalAlign: HorizontalAlign.Center,
             background: true,
         })
+        archetypes.Stage.spawn({})
         for (const archetype of Object.values(archetypes)) {
             if (!('globalPreprocess' in archetype)) continue
             archetype.globalPreprocess()
         }
+        this.customElement()
+    }
+    customElement() {
+        if (options.hideCustom) return
+        archetypes.ComboNumber.spawn({})
+        if (options.customDamage && replay.isReplay) archetypes.Damage.spawn({})
+        if (options.customJudgment) {
+            archetypes.JudgmentText.spawn({})
+            if (options.fastLate && replay.isReplay) {
+                archetypes.JudgmentAccuracy.spawn({})
+            }
+        }
+        if (options.customCombo && (!options.auto || replay.isReplay)) {
+            archetypes.ComboLabel.spawn({})
+            //archetypes.ComboNumberGlow.spawn({})
+            //archetypes.ComboNumberEffect.spawn({})
+        }
+        merge.searching(this.cache, this.customCombo, this.ap)
+    }
+    ap = this.entityMemory(Boolean)
+    cache = this.entityMemory(Tuple(32, Number))
+    get customCombo() {
+        return archetypes.NormalTapNote.customCombo
     }
 }
