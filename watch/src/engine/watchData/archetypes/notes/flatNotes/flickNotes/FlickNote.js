@@ -4,7 +4,7 @@ import { linearEffectLayout } from '../../../../particle.js'
 import { scaledScreen } from '../../../../scaledScreen.js'
 import { getZ, layer, skin } from '../../../../skin.js'
 import { FlatNote } from '../FlatNote.js'
-import { archetypes } from '../../../index.js'
+import { FlickDirection } from '../../../../../../../../shared/src/engine/data/FlickDirection.js'
 export class FlickNote extends FlatNote {
     flickImport = this.defineImport({
         direction: { name: 'direction', type: DataType },
@@ -21,7 +21,7 @@ export class FlickNote extends FlatNote {
     preprocess() {
         super.preprocess()
         if (options.mirror) {
-            this.flickImport.direction *= -1
+            this.mirrorDirection()
         }
     }
     globalInitialize() {
@@ -29,15 +29,21 @@ export class FlickNote extends FlatNote {
         this.arrow.sprite = getArrowSpriteId(
             this.arrowSprites,
             this.import.size,
-            this.flickImport.direction,
+            this.changingDirection(this.flickImport.direction),
         )
         if (skin.sprites.exists(this.arrow.sprite)) {
-            const w = (Math.clamp(this.import.size, 0, 3) * (-this.flickImport.direction || 1)) / 2
+            const w =
+                (Math.clamp(this.import.size, 0, 3) *
+                    (-this.changingDirection(this.flickImport.direction) || 1)) /
+                2
+            let b = 1
+            let t = 1 - 2 * Math.abs(w) * scaledScreen.wToH
+            if (this.checkDirection(this.flickImport.direction) == -1) [b, t] = [t, b]
             new Rect({
                 l: this.import.lane - w,
                 r: this.import.lane + w,
-                b: 1,
-                t: 1 - 2 * Math.abs(w) * scaledScreen.wToH,
+                b,
+                t,
             })
                 .toQuad()
                 .copyTo(this.arrow.layout)
@@ -46,13 +52,16 @@ export class FlickNote extends FlatNote {
             const w = Math.clamp(this.import.size / 2, 1, 2)
             new Rect({ l: -1, r: 1, b: 1, t: -1 })
                 .toQuad()
-                .rotate((Math.PI / 6) * this.flickImport.direction)
+                .rotate((Math.PI / 6) * this.changingDirection(this.flickImport.direction))
                 .scale(w, w * scaledScreen.wToH)
                 .translate(this.import.lane, 1 - w * scaledScreen.wToH)
                 .copyTo(this.arrow.layout)
         }
         if (options.markerAnimation)
-            new Vec(this.flickImport.direction, -2 * scaledScreen.wToH).copyTo(this.arrow.animation)
+            new Vec(
+                this.changingDirection(this.flickImport.direction),
+                -2 * scaledScreen.wToH,
+            ).copyTo(this.arrow.animation)
         this.arrow.z = getZ(layer.note.arrow, -this.targetTime, this.import.lane, 0)
     }
     get hitTime() {
@@ -65,7 +74,9 @@ export class FlickNote extends FlatNote {
         super.render()
         if (time.now > this.hitTime + time.delta) return
         if (options.markerAnimation) {
-            const s = Math.mod(time.now, 0.5) / 0.5
+            const s = this.checkDirection(this.flickImport.direction)
+                ? Math.mod(time.now, 0.5) / 0.5
+                : 1 - Math.mod(time.now, 0.5) / 0.5
             skin.sprites.draw(
                 this.arrow.sprite,
                 this.arrow.layout.add(this.arrow.animation.mul(s)).mul(this.y),
@@ -86,7 +97,7 @@ export class FlickNote extends FlatNote {
                 lane: this.import.lane,
                 shear:
                     (options.version == 1 ? (this.critical ? 2.5 : 1) : 1) *
-                    this.flickImport.direction,
+                    this.changingDirection(this.flickImport.direction),
             }),
             0.32,
             false,
@@ -94,5 +105,42 @@ export class FlickNote extends FlatNote {
     }
     get critical() {
         return false
+    }
+    changingDirection(direction) {
+        if (direction == FlickDirection.UpOmni || direction == FlickDirection.DownOmni) return 0
+        else if (direction == FlickDirection.UpLeft || direction == FlickDirection.DownLeft)
+            return -1
+        else return 1
+    }
+    checkDirection(direction) {
+        if (
+            direction == FlickDirection.DownLeft ||
+            direction == FlickDirection.DownRight ||
+            direction == FlickDirection.DownOmni
+        )
+            return -1
+        else return 1
+    }
+    mirrorDirection() {
+        switch (this.flickImport.direction) {
+            case FlickDirection.UpOmni:
+                this.flickImport.direction = FlickDirection.DownOmni
+                break
+            case FlickDirection.DownOmni:
+                this.flickImport.direction = FlickDirection.UpOmni
+                break
+            case FlickDirection.UpLeft:
+                this.flickImport.direction = FlickDirection.DownLeft
+                break
+            case FlickDirection.DownLeft:
+                this.flickImport.direction = FlickDirection.UpLeft
+                break
+            case FlickDirection.UpRight:
+                this.flickImport.direction = FlickDirection.DownRight
+                break
+            case FlickDirection.DownRight:
+                this.flickImport.direction = FlickDirection.UpRight
+                break
+        }
     }
 }

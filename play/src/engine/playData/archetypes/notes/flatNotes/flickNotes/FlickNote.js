@@ -5,7 +5,6 @@ import { linearEffectLayout } from '../../../../particle.js'
 import { scaledScreen } from '../../../../scaledScreen.js'
 import { getZ, layer, skin } from '../../../../skin.js'
 import { FlatNote } from '../FlatNote.js'
-import { archetypes } from '../../../index.js'
 export class FlickNote extends FlatNote {
     leniency = 1
     flickImport = this.defineImport({
@@ -88,7 +87,9 @@ export class FlickNote extends FlatNote {
     render() {
         super.render()
         if (options.markerAnimation) {
-            const s = Math.mod(time.now, 0.5) / 0.5
+            const s = this.checkDirection(this.flickImport.direction)
+                ? Math.mod(time.now, 0.5) / 0.5
+                : 1 - Math.mod(time.now, 0.5) / 0.5
             skin.sprites.draw(
                 this.arrow.sprite,
                 this.arrow.layout.add(this.arrow.animation.mul(s)).mul(this.y),
