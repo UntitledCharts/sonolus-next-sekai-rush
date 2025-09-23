@@ -64,9 +64,14 @@ export class CriticalTraceFlickNote extends TraceFlickNote {
     get slotEffect() {
         return archetypes.CriticalSlotEffect
     }
-    playLaneEffects() {}
+    playLaneEffects() {
+        //None
+    }
     preprocess() {
         super.preprocess()
+        this.spawnLaneEffect()
+    }
+    spawnLaneEffect() {
         const lane = this.import.lane
         const l = lane - this.import.size
         const r = lane + this.import.size

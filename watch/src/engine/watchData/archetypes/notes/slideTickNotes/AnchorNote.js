@@ -52,4 +52,7 @@ export class AnchorNote extends Note {
     setCustomElement() {
         //None
     }
+    customElement() {
+        //None
+    }
 }

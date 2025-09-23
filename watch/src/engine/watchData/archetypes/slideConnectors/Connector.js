@@ -391,7 +391,7 @@ export class Connector extends Guide {
             const startTime = streams.getNextKey(this.import.activeHeadRef, key)
             if (startTime === key) break
             const endTime = streams.getValue(this.import.activeHeadRef, startTime)
-            this.scheduleSFX(startTime, Math.min(endTime, this.activeTailMemory.targetTime))
+            this.scheduleSFX(startTime, Math.min(endTime, this.activeTailMemory.hitTime))
             key = startTime
         }
     }

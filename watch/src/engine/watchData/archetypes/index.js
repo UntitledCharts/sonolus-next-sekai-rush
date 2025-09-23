@@ -1,8 +1,6 @@
 import { LaneEffectSpawner } from './/notes/flatNotes/flickNotes/LaneEffectSpawner.js'
 import { ComboLabel } from './customElements/ComboLabel.js'
 import { ComboNumber } from './customElements/ComboNumber.js'
-import { ComboNumberEffect } from './customElements/ComboNumberEffect.js'
-import { ComboNumberGlow } from './customElements/ComboNumberGlow.js'
 import { Initialization } from './Initialization.js'
 import { JudgmentAccuracy } from './customElements/JudgmentAccuracy.js'
 import { JudgmentText } from './customElements/JudgmentText.js'
@@ -53,6 +51,34 @@ import { NormalHeadTraceFlickNote } from './notes/flatNotes/flickNotes/traceFlic
 import { CriticalHeadTraceFlickNote } from './notes/flatNotes/flickNotes/traceFlickNotes/CriticalHeadTraceFlickNote.js'
 import { NormalTailTraceFlickNote } from './notes/flatNotes/flickNotes/traceFlickNotes/NormalTailTraceFlickNote.js'
 import { CriticalTailTraceFlickNote } from './notes/flatNotes/flickNotes/traceFlickNotes/CriticalTailTraceFlickNote.js'
+import { FakeNormalTapNote } from './notes/flatNotes/tapNotes/FakeNormalTapNote.js'
+import { FakeCriticalTapNote } from './notes/flatNotes/tapNotes/FakeCriticalTapNote.js'
+import { FakeNormalFlickNote } from './notes/flatNotes/flickNotes/FakeNormalFlickNote.js'
+import { FakeCriticalFlickNote } from './notes/flatNotes/flickNotes/FakeCriticalFlickNote.js'
+import { FakeNormalTraceNote } from './notes/flatNotes/traceNotes/FakeNormalTraceNote.js'
+import { FakeCriticalTraceNote } from './notes/flatNotes/traceNotes/FakeCriticalTraceNote.js'
+import { FakeNormalTraceFlickNote } from './notes/flatNotes/flickNotes/traceFlickNotes/FakeNormalTraceFlickNote.js'
+import { FakeCriticalTraceFlickNote } from './notes/flatNotes/flickNotes/traceFlickNotes/FakeCriticalTraceFlickNote.js'
+import { FakeNormalHeadTapNote } from './notes/flatNotes/slideStartNotes/FakeNormalHeadTapNote.js'
+import { FakeCriticalHeadTapNote } from './notes/flatNotes/slideStartNotes/FakeCriticalHeadTapNote.js'
+import { FakeNormalHeadFlickNote } from './notes/flatNotes/flickNotes/FakeNormalHeadFlickNote.js'
+import { FakeCriticalHeadFlickNote } from './notes/flatNotes/flickNotes/FakeCriticalHeadFlickNote.js'
+import { FakeNormalHeadTraceNote } from './notes/flatNotes/traceNotes/FakeNormalHeadTraceNote.js'
+import { FakeCriticalHeadTraceNote } from './notes/flatNotes/traceNotes/FakeCriticalHeadTraceNote.js'
+import { FakeNormalHeadTraceFlickNote } from './notes/flatNotes/flickNotes/traceFlickNotes/FakeNormalHeadTraceFlickNote.js'
+import { FakeCriticalHeadTraceFlickNote } from './notes/flatNotes/flickNotes/traceFlickNotes/FakeCriticalHeadTraceFlickNote.js'
+import { FakeNormalTailFlickNote } from './notes/flatNotes/flickNotes/FakeNormalTailFlickNote.js'
+import { FakeCriticalTailFlickNote } from './notes/flatNotes/flickNotes/FakeCriticalTailFlickNote.js'
+import { FakeNormalTailTraceNote } from './notes/flatNotes/traceNotes/FakeNormalTailTraceNote.js'
+import { FakeCriticalTailTraceNote } from './notes/flatNotes/traceNotes/FakeCriticalTailTraceNote].js'
+import { FakeNormalTailTraceFlickNote } from './notes/flatNotes/flickNotes/traceFlickNotes/FakeNormalTailTraceFlickNote.js'
+import { FakeCriticalTailTraceFlickNote } from './notes/flatNotes/flickNotes/traceFlickNotes/FakeCriticalTailTraceFlickNote.js'
+import { FakeNormalTailReleaseNote } from './notes/flatNotes/slideEndNotes/FakeNormalTailReleaseNote.js'
+import { FakeCriticalTailReleaseNote } from './notes/flatNotes/slideEndNotes/FakeCriticalTailReleaseNote.js'
+import { FakeNormalTickNote } from './notes/slideTickNotes/visibleSlideTickNotes/FakeNormalTickNote.js'
+import { FakeCriticalTickNote } from './notes/slideTickNotes/visibleSlideTickNotes/FakeCriticalTickNote.js'
+import { FakeAnchorNote } from './notes/slideTickNotes/FakeAnchorNote.js'
+import { FakeTransientHiddenTickNote } from './notes/slideTickNotes/FakeTransientHiddenTickNote.js'
 export const archetypes = defineArchetypes({
     '#TIMESCALE_GROUP': TimeScaleGroup,
     '#TIMESCALE_CHANGE': TimeScaleChange,
@@ -90,6 +116,35 @@ export const archetypes = defineArchetypes({
     AnchorNote,
     TransientHiddenTickNote,
 
+    FakeNormalTapNote,
+    FakeCriticalTapNote,
+    FakeNormalFlickNote,
+    FakeCriticalFlickNote,
+    FakeNormalTraceNote,
+    FakeCriticalTraceNote,
+    FakeNormalTraceFlickNote,
+    FakeCriticalTraceFlickNote,
+    FakeNormalHeadTapNote,
+    FakeCriticalHeadTapNote,
+    FakeNormalHeadFlickNote,
+    FakeCriticalHeadFlickNote,
+    FakeNormalHeadTraceNote,
+    FakeCriticalHeadTraceNote,
+    FakeNormalHeadTraceFlickNote,
+    FakeCriticalHeadTraceFlickNote,
+    FakeNormalTailFlickNote,
+    FakeCriticalTailFlickNote,
+    FakeNormalTailTraceNote,
+    FakeCriticalTailTraceNote,
+    FakeNormalTailTraceFlickNote,
+    FakeCriticalTailTraceFlickNote,
+    FakeNormalTailReleaseNote,
+    FakeCriticalTailReleaseNote,
+    FakeNormalTickNote,
+    FakeCriticalTickNote,
+    FakeAnchorNote,
+    FakeTransientHiddenTickNote,
+
     NormalSlotEffect,
     SlideSlotEffect,
     FlickSlotEffect,
@@ -108,7 +163,5 @@ export const archetypes = defineArchetypes({
     JudgmentAccuracy,
     ComboNumber,
     ComboLabel,
-    //ComboNumberGlow,
-    //ComboNumberEffect,
     Damage,
 })

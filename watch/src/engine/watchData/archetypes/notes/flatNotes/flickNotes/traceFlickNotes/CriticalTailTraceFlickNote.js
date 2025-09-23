@@ -69,6 +69,9 @@ export class CriticalTailTraceFlickNote extends TraceFlickNote {
     }
     preprocess() {
         super.preprocess()
+        this.spawnLaneEffect()
+    }
+    spawnLaneEffect() {
         const lane = this.import.lane
         const l = lane - this.import.size
         const r = lane + this.import.size

@@ -109,17 +109,4 @@ export class Stage extends SpawnableArchetype({}) {
             !options.showLane ? 0 : 1,
         )
     }
-    preprocess() {
-        if (options.sfxEnabled && replay.isReplay) {
-            for (let l = -6; l < 6; l++) {
-                let key = -999999
-                while (true) {
-                    const newKey = streams.getNextKey(l, key)
-                    if (key == newKey) break
-                    effect.clips.stage.schedule(newKey, sfxDistance)
-                    key = newKey
-                }
-            }
-        }
-    }
 }

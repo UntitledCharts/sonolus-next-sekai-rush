@@ -45,7 +45,7 @@ export class Note extends Archetype {
         windows: Number,
     })
     customCombo = this.defineSharedMemory({
-        value: Tuple(4, Number),
+        value: Number,
         time: Number,
         length: Number,
         start: Number,
@@ -73,7 +73,8 @@ export class Note extends Archetype {
                 : this.import.segmentAlpha
         if (options.mirror) this.import.lane *= -1
         if (this.hasInput) this.result.time = this.targetTime
-        //this.setCustomElement()
+        this.setCustomElement()
+        this.customElement()
         this.getWindows()
     }
     get hitTime() {
@@ -102,6 +103,26 @@ export class Note extends Archetype {
                             ? 2
                             : 0
                     : 0
+        }
+    }
+    customElement() {
+        if (options.hideCustom) return
+        archetypes.ComboNumber.spawn({ hitTime: this.hitTime, info: this.info.index })
+        if (options.customDamage && replay.isReplay && this.import.judgment != Judgment.Miss)
+            archetypes.Damage.spawn({ hitTime: this.hitTime, info: this.info.index })
+        if (options.customJudgment) {
+            archetypes.JudgmentText.spawn({ hitTime: this.hitTime, info: this.info.index })
+            if (
+                options.fastLate &&
+                replay.isReplay &&
+                this.import.judgment != Judgment.Perfect &&
+                this.import.judgment != Judgment.Miss
+            ) {
+                archetypes.JudgmentAccuracy.spawn({ hitTime: this.hitTime, info: this.info.index })
+            }
+        }
+        if (options.customCombo && (!options.auto || replay.isReplay)) {
+            archetypes.ComboLabel.spawn({ hitTime: this.hitTime, info: this.info.index })
         }
     }
 }

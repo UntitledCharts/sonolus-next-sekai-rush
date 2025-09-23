@@ -33,8 +33,8 @@ export const comboNumberLayout = {
                 b: s * (centerY + h / 2) + (1 - s) * centerY,
             })
             const digitLayout2 = NormalLayout({
-                l: s2 * (centerX - digitWidth / 2) + (1 - s2) * centerX,
-                r: s2 * (centerX + digitWidth / 2) + (1 - s2) * centerX,
+                l: s2 * (centerX - digitWidth2 / 2) + (1 - s2) * centerX,
+                r: s2 * (centerX + digitWidth2 / 2) + (1 - s2) * centerX,
                 t: s2 * (centerY - h2 / 2) + (1 - s2) * centerY,
                 b: s2 * (centerY + h2 / 2) + (1 - s2) * centerY,
             })
@@ -80,8 +80,8 @@ export const comboNumberLayout = {
                 b: bottom,
             })
             const digitLayout2 = NormalLayout({
-                l: s2 * (startX2 + offset2) + (1 - s) * centerX,
-                r: s2 * (startX2 + offset2 + digitWidth2) + (1 - s) * centerX,
+                l: s2 * (startX2 + offset2) + (1 - s2) * centerX,
+                r: s2 * (startX2 + offset2 + digitWidth2) + (1 - s2) * centerX,
                 t: top2,
                 b: bottom2,
             })

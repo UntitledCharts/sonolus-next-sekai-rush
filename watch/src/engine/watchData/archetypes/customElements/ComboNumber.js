@@ -2,7 +2,10 @@ import { options } from '../../../configuration/options.js'
 import { getZ, layer } from '../../skin.js'
 import { comboNumberLayout } from './comboNumberLayout.js'
 import { archetypes } from '../index.js'
-export class ComboNumber extends SpawnableArchetype({}) {
+export class ComboNumber extends SpawnableArchetype({
+    hitTime: Number,
+    info: Number,
+}) {
     preprocessOrder = 4
     check = this.entityMemory(Boolean)
     z = this.entityMemory(Number)
@@ -15,46 +18,19 @@ export class ComboNumber extends SpawnableArchetype({}) {
         this.z = getZ(layer.judgment, 0, 0, 0)
     }
     spawnTime() {
-        return -999999
+        return this.spawnData.hitTime
     }
     despawnTime() {
-        return 999999
-    }
-    updateSequential() {
-        this.searching.get(0).head = this.head
+        if (this.customMemory.get(this.next).time >= this.spawnData.hitTime)
+            return this.customMemory.get(this.next).time
+        else return 999999
     }
     updateParallel() {
-        if (time.now <= this.customMemory.get(this.customMemory.get(0).start).time && this.check) {
-            this.head = this.customMemory.get(0).start
-            this.check = false
-        }
-        if (time.skip) {
-            let ptr = this.customMemory.get(0).start
-            const tail = this.customMemory.get(0).tail
-            for (let level = 3; level >= 0; level--) {
-                while (
-                    ptr != tail &&
-                    this.customMemory.get(this.customMemory.get(ptr).value.get(level)).time <
-                        time.now
-                ) {
-                    ptr = this.customMemory.get(ptr).value.get(level)
-                }
-            }
-            this.head = ptr
-            this.check = true
-        }
-        while (
-            time.now >= this.customMemory.get(this.customMemory.get(this.head).value.get(0)).time &&
-            this.head != this.customMemory.get(0).tail
-        ) {
-            this.head = this.customMemory.get(this.head).value.get(0)
-            this.check = true
-        }
         if (!options.customCombo || (options.auto && !replay.isReplay)) return
         if (time.now < this.customMemory.get(this.customMemory.get(0).start).time) return
-        if (this.customMemory.get(this.head).combo == 0) return
-        const c = this.customMemory.get(this.head).combo
-        const t = this.customMemory.get(this.head).time
+        if (this.customMemory.get(this.spawnData.info).combo == 0) return
+        const c = this.customMemory.get(this.spawnData.info).combo
+        const t = this.customMemory.get(this.spawnData.info).time
         if (c != 0) {
             const digits = [
                 Math.floor(c / 1000000) % 10,
@@ -81,7 +57,6 @@ export class ComboNumber extends SpawnableArchetype({}) {
                 time.now >= t + 0.112
                     ? ui.configuration.combo.alpha * Math.unlerp(t + 0.192, t + 0.112, time.now)
                     : 0
-
             const a3 = ui.configuration.combo.alpha * 0.8 * ((Math.cos(time.now * Math.PI) + 1) / 2)
             const digitGap = digitWidth * options.comboDistance
             const digitGap2 = digitWidth2 * options.comboDistance
@@ -111,6 +86,9 @@ export class ComboNumber extends SpawnableArchetype({}) {
                 startX2,
             )
         }
+    }
+    get next() {
+        return this.customMemory.get(this.spawnData.info).value
     }
     get customMemory() {
         return archetypes.NormalTapNote.customCombo

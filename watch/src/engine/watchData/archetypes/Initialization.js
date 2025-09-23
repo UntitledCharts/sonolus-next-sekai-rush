@@ -4,6 +4,7 @@ import { scaledScreen } from '../scaledScreen.js'
 import { skin } from '../skin.js'
 import { archetypes } from './index.js'
 import { merge } from '../merge.js'
+import { effect, sfxDistance } from '../effect.js'
 export class Initialization extends Archetype {
     preprocessOrder = 1
     preprocess() {
@@ -146,29 +147,26 @@ export class Initialization extends Archetype {
             horizontalAlign: HorizontalAlign.Center,
             background: true,
         })
+        this.playLaneSFX()
         archetypes.Stage.spawn({})
         for (const archetype of Object.values(archetypes)) {
             if (!('globalPreprocess' in archetype)) continue
             archetype.globalPreprocess()
         }
-        this.customElement()
+        merge.searching(this.cache, this.customCombo, this.ap)
     }
-    customElement() {
-        if (options.hideCustom) return
-        archetypes.ComboNumber.spawn({})
-        if (options.customDamage && replay.isReplay) archetypes.Damage.spawn({})
-        if (options.customJudgment) {
-            archetypes.JudgmentText.spawn({})
-            if (options.fastLate && replay.isReplay) {
-                archetypes.JudgmentAccuracy.spawn({})
+    playLaneSFX() {
+        if (options.sfxEnabled && replay.isReplay) {
+            for (let l = -6; l < 6; l++) {
+                let key = -999999
+                while (true) {
+                    const newKey = streams.getNextKey(l, key)
+                    if (key == newKey) break
+                    effect.clips.stage.schedule(newKey, sfxDistance)
+                    key = newKey
+                }
             }
         }
-        if (options.customCombo && (!options.auto || replay.isReplay)) {
-            archetypes.ComboLabel.spawn({})
-            //archetypes.ComboNumberGlow.spawn({})
-            //archetypes.ComboNumberEffect.spawn({})
-        }
-        merge.searching(this.cache, this.customCombo, this.ap)
     }
     ap = this.entityMemory(Boolean)
     cache = this.entityMemory(Tuple(32, Number))

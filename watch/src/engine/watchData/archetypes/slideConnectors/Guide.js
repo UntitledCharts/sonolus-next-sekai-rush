@@ -126,8 +126,6 @@ export class Guide extends Archetype {
             this.tailMemory.spawnTime,
         )
         this.endTime = this.visualTime.end
-        debug.log(this.headImport.lane)
-        debug.log(this.tailImport.lane)
     }
     get activeHeadMemory() {
         return archetypes.NormalHeadTapNote.sharedMemory.get(this.import.activeHeadRef)
