@@ -1,7 +1,5 @@
 import { ComboLabel } from './customElements/ComboLabel.js'
 import { ComboNumber } from './customElements/ComboNumber.js'
-import { ComboNumberEffect } from './customElements/ComboNumberEffect.js'
-import { ComboNumberGlow } from './customElements/ComboNumberGlow.js'
 import { Initialization } from './Initialization.js'
 import { InputManager } from './InputManager.js'
 import { JudgmentAccuracy } from './customElements/JudgmentAccuracy.js'
@@ -169,8 +167,6 @@ export const archetypes = defineArchetypes({
     JudgmentText,
     JudgmentAccuracy,
     ComboNumber,
-    ComboNumberGlow,
-    ComboNumberEffect,
     ComboLabel,
     Damage,
 })

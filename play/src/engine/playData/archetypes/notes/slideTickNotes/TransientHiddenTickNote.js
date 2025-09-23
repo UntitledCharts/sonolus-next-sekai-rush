@@ -95,14 +95,6 @@ export class TransientHiddenTickNote extends Note {
                 time: time.now,
                 judgment: this.result.judgment,
             })
-            archetypes.ComboNumberEffect.spawn({
-                time: time.now,
-                judgment: this.result.judgment,
-            })
-            archetypes.ComboNumberGlow.spawn({
-                time: time.now,
-                judgment: this.result.judgment,
-            })
             archetypes.ComboLabel.spawn({
                 time: time.now,
                 judgment: this.result.judgment,
