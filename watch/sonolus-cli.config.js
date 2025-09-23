@@ -7,11 +7,11 @@ export default {
     esbuild(options) {
         return {
             ...options,
-            treeShaking: true,
+            //treeShaking: true,
             minifyWhitespace: true,
         }
     },
-    workerCount: 6,
+    //workerCount: 6,
     devServer(sonolus) {
         try {
             copyFileSync('./shared/src/level/bgm.mp3', './.dev/bgm.mp3')
