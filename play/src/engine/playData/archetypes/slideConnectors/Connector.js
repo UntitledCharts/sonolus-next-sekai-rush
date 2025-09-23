@@ -106,7 +106,6 @@ export class Connector extends Guide {
         if (this.import.activeHeadRef <= 0) return
         if (time.now < this.headMemory.targetTime) return
         if (this.visual == VisualType.Activated) {
-            debug.log(this.visual)
             if (this.shouldPlaySFX && !this.sfxInstanceId) this.playSFX()
             if (this.shouldPlayCircularEffect && this.activeHeadMemory.circular)
                 this.updateCircularEffect()

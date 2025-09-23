@@ -201,7 +201,7 @@ export class Guide extends Archetype {
             if (this.segmentHeadMemory.segmentKind < 100) disallowEmpty(touch)
             this.activeHeadMemory.lastActiveTime = time.now
         }
-        if (this.segmentHeadMemory.segmentKind < 100) {
+        if (this.import.activeHeadRef > 0) {
             if (this.activeHeadMemory.lastActiveTime === time.now) {
                 if (this.activeHeadMemory.exportStartTime !== -1000) return
                 streams.set(this.import.activeHeadRef, time.now, 999999)
