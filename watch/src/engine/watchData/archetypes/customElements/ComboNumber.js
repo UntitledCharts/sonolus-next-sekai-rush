@@ -1,71 +1,36 @@
 import { options } from '../../../configuration/options.js'
 import { getZ, layer } from '../../skin.js'
 import { comboNumberLayout } from './comboNumberLayout.js'
-export class ComboNumber extends SpawnableArchetype({}) {
+import { archetypes } from '../index.js'
+export class ComboNumber extends SpawnableArchetype({
+    hitTime: Number,
+    info: Number,
+}) {
     preprocessOrder = 4
     check = this.entityMemory(Boolean)
     z = this.entityMemory(Number)
     z2 = this.entityMemory(Number)
     head = this.entityMemory(Number)
-    customCombo = this.defineSharedMemory({
-        value: Tuple(4, Number),
-        time: Number,
-        scaledTime: Number,
-        length: Number,
-        start: Number,
-        combo: Number,
-        judgment: DataType,
-        tail: Number,
-        ap: Boolean,
-        accuracy: Number,
-        fastLate: Number,
-    })
     searching = this.defineSharedMemory({
         head: Number,
     })
     initialize() {
-        this.z = getZ(layer.judgment, 0, 0)
+        this.z = getZ(layer.judgment, 0, 0, 0)
     }
     spawnTime() {
-        return -999999
+        return this.spawnData.hitTime
     }
     despawnTime() {
-        return 999999
-    }
-    updateSequential() {
-        this.searching.get(0).head = this.head
+        if (this.customMemory.get(this.next).time >= this.spawnData.hitTime)
+            return this.customMemory.get(this.next).time
+        else return 999999
     }
     updateParallel() {
-        if (time.now <= this.customCombo.get(this.customCombo.get(0).start).time && this.check) {
-            this.head = this.customCombo.get(0).start
-            this.check = false
-        }
-        if (time.skip) {
-            let ptr = this.customCombo.get(0).start
-            const tail = this.customCombo.get(0).tail
-            for (let level = 3; level >= 0; level--) {
-                while (
-                    ptr != tail &&
-                    this.customCombo.get(this.customCombo.get(ptr).value.get(level)).time < time.now
-                ) {
-                    ptr = this.customCombo.get(ptr).value.get(level)
-                }
-            }
-            this.head = ptr
-            this.check = true
-        }
-        while (
-            time.now >= this.customCombo.get(this.customCombo.get(this.head).value.get(0)).time &&
-            this.head != this.customCombo.get(0).tail
-        ) {
-            this.head = this.customCombo.get(this.head).value.get(0)
-            this.check = true
-        }
         if (!options.customCombo || (options.auto && !replay.isReplay)) return
-        if (time.now < this.customCombo.get(this.customCombo.get(0).start).time) return
-        if (this.customCombo.get(this.head).combo == 0) return
-        const c = this.customCombo.get(this.head).combo
-        const t = this.customCombo.get(this.head).time
+        if (time.now < this.customMemory.get(this.customMemory.get(0).start).time) return
+        if (this.customMemory.get(this.spawnData.info).combo == 0) return
+        const c = this.customMemory.get(this.spawnData.info).combo
+        const t = this.customMemory.get(this.spawnData.info).time
         if (c != 0) {
             const digits = [
                 Math.floor(c / 1000000) % 10,
@@ -76,35 +41,56 @@ export class ComboNumber extends SpawnableArchetype({}) {
                 Math.floor(c / 10) % 10,
                 c % 10,
             ]
-            let digitCount = 4
-            if (digits[0] === 0) digitCount = 3
-            if (digits[0] === 0 && digits[1] === 0) digitCount = 2
-            if (digits[0] === 0 && digits[1] === 0 && digits[2] === 0) digitCount = 1
+            const firstDigitIndex = digits.findIndex((digit) => digit !== 0)
+            const digitCount = firstDigitIndex === -1 ? 1 : digits.length - firstDigitIndex
             const h = 0.1222 * ui.configuration.combo.scale
+            const h2 = 0.15886 * ui.configuration.combo.scale
             const digitWidth = h * 0.79 * 7
+            const digitWidth2 = h2 * 0.79 * 7
             const centerX = 5.337
             const centerY = 0.585
             // 애니메이션 = s * (원래좌표) + (1 - s) * centerX, s * (원래좌표) + (1 - s) * centerY
             const s = 0.6 + 0.4 * Math.unlerpClamped(t, t + 0.112, time.now)
+            const s2 = 0.769 + 0.231 * Math.unlerpClamped(t + 0.112, t + 0.192, time.now)
             const a = ui.configuration.combo.alpha
+            const a2 =
+                time.now >= t + 0.112
+                    ? ui.configuration.combo.alpha * Math.unlerp(t + 0.192, t + 0.112, time.now)
+                    : 0
+            const a3 = ui.configuration.combo.alpha * 0.8 * ((Math.cos(time.now * Math.PI) + 1) / 2)
             const digitGap = digitWidth * options.comboDistance
+            const digitGap2 = digitWidth2 * options.comboDistance
             const totalWidth = digitCount * digitWidth + (digitCount - 1) * digitGap
+            const totalWidth2 = digitCount * digitWidth2 + (digitCount - 1) * digitGap2
             const startX = centerX - totalWidth / 2
+            const startX2 = centerX - totalWidth2 / 2
             comboNumberLayout.numberLayout(
                 this.head,
-                this.customCombo,
-                this.z,
+                this.customMemory,
                 digits,
                 digitCount,
                 digitWidth,
+                digitWidth2,
                 digitGap,
+                digitGap2,
                 s,
+                s2,
                 a,
+                a2,
+                a3,
                 h,
+                h2,
                 centerX,
                 centerY,
                 startX,
+                startX2,
             )
         }
+    }
+    get next() {
+        return this.customMemory.get(this.spawnData.info).value
+    }
+    get customMemory() {
+        return archetypes.NormalTapNote.customCombo
     }
 }

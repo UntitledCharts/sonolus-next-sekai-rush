@@ -1,16 +1,13 @@
 import {
-    approach,
     approach2,
     progressCutoff,
     progressStart,
 } from '../../../../../shared/src/engine/data/note.js'
-import { perspectiveLayout, QuadLayout } from '../../../../../shared/src/engine/data/utils.js'
+import { QuadLayout } from '../../../../../shared/src/engine/data/utils.js'
 import { options } from '../../configuration/options.js'
 import { note } from '../note.js'
-import { scaledScreen } from '../scaledScreen.js'
 import { getZ, layer, skin } from '../skin.js'
 import { archetypes } from './index.js'
-import { timeToScaledTime, scaledTimeToEarliestTime } from './utils.js'
 import { progress } from './utils.js'
 export class SimLine extends Archetype {
     import = this.defineImport({

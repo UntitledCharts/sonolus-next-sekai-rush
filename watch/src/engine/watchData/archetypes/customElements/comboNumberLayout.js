@@ -1,22 +1,29 @@
 import { NormalLayout } from '../../../../../../shared/src/engine/data/utils'
 import { drawDigit } from './drawDigit'
+import { getZ } from '../../skin'
+import { layer } from '../../skin'
 
 export const comboNumberLayout = {
     numberLayout(
         head,
         customCombo,
-        z,
         digits,
         digitCount,
         digitWidth,
+        digitWidth2,
         digitGap,
+        digitGap2,
         s,
+        s2,
         a,
+        a2,
+        a3,
         h,
+        h2,
         centerX,
         centerY,
         startX,
-        glow,
+        startX2,
     ) {
         if (digitCount === 1) {
             const digitLayout = NormalLayout({
@@ -25,30 +32,83 @@ export const comboNumberLayout = {
                 t: s * (centerY - h / 2) + (1 - s) * centerY,
                 b: s * (centerY + h / 2) + (1 - s) * centerY,
             })
-            if (glow) {
-                drawDigit.drawAp(head, customCombo, digits[6], digitLayout, z, a)
-            } else {
-                drawDigit.drawDigit(head, customCombo, digits[6], digitLayout, z, a)
-            }
+            const digitLayout2 = NormalLayout({
+                l: s2 * (centerX - digitWidth2 / 2) + (1 - s2) * centerX,
+                r: s2 * (centerX + digitWidth2 / 2) + (1 - s2) * centerX,
+                t: s2 * (centerY - h2 / 2) + (1 - s2) * centerY,
+                b: s2 * (centerY + h2 / 2) + (1 - s2) * centerY,
+            })
+            drawDigit.drawAp(
+                head,
+                customCombo,
+                digits[6],
+                digitLayout,
+                getZ(layer.judgment + 2, 0, 0, 0),
+                a3,
+            )
+            drawDigit.drawDigit(
+                head,
+                customCombo,
+                digits[6],
+                digitLayout,
+                getZ(layer.judgment, 0, 0, 0),
+                a,
+            )
+            drawDigit.drawDigit(
+                head,
+                customCombo,
+                digits[6],
+                digitLayout2,
+                getZ(layer.judgment + 1, 0, 0, 0),
+                a2,
+            )
             return
         }
 
         const top = s * (centerY - h / 2) + (1 - s) * centerY
         const bottom = s * (centerY + h / 2) + (1 - s) * centerY
+        const top2 = s2 * (centerY - h2 / 2) + (1 - s2) * centerY
+        const bottom2 = s2 * (centerY + h2 / 2) + (1 - s2) * centerY
 
         const drawNthDigit = (positionIndex, digit) => {
             const offset = positionIndex * (digitWidth + digitGap)
+            const offset2 = positionIndex * (digitWidth2 + digitGap2)
             const digitLayout = NormalLayout({
                 l: s * (startX + offset) + (1 - s) * centerX,
                 r: s * (startX + offset + digitWidth) + (1 - s) * centerX,
                 t: top,
                 b: bottom,
             })
-            if (glow) {
-                drawDigit.drawAp(head, customCombo, digit, digitLayout, z, a)
-            } else {
-                drawDigit.drawDigit(head, customCombo, digit, digitLayout, z, a)
-            }
+            const digitLayout2 = NormalLayout({
+                l: s2 * (startX2 + offset2) + (1 - s2) * centerX,
+                r: s2 * (startX2 + offset2 + digitWidth2) + (1 - s2) * centerX,
+                t: top2,
+                b: bottom2,
+            })
+            drawDigit.drawAp(
+                head,
+                customCombo,
+                digit,
+                digitLayout,
+                getZ(layer.judgment + 2, 0, 0, 0),
+                a3,
+            )
+            drawDigit.drawDigit(
+                head,
+                customCombo,
+                digit,
+                digitLayout,
+                getZ(layer.judgment, 0, 0, 0),
+                a,
+            )
+            drawDigit.drawDigit(
+                head,
+                customCombo,
+                digit,
+                digitLayout2,
+                getZ(layer.judgment + 1, 0, 0, 0),
+                a2,
+            )
         }
 
         switch (digitCount) {

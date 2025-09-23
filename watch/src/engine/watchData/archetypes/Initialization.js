@@ -3,7 +3,10 @@ import { particle } from '../particle.js'
 import { scaledScreen } from '../scaledScreen.js'
 import { skin } from '../skin.js'
 import { archetypes } from './index.js'
+import { merge } from '../merge.js'
+import { effect, sfxDistance } from '../effect.js'
 export class Initialization extends Archetype {
+    preprocessOrder = 1
     preprocess() {
         const targetAspectRatio = 16 / 9
         const stage = {
@@ -25,6 +28,9 @@ export class Initialization extends Archetype {
         scaledScreen.r = screen.r / w
         scaledScreen.b = screen.b / (b - t)
         scaledScreen.t = screen.t / (b - t)
+        scaledScreen.t2 = t
+        scaledScreen.w = w
+        scaledScreen.h = b - t
         scaledScreen.wToH = w / (t - b)
         const transform = Mat.identity.scale(w, b - t).translate(0, t)
         skin.transform.set(transform)
@@ -141,9 +147,30 @@ export class Initialization extends Archetype {
             horizontalAlign: HorizontalAlign.Center,
             background: true,
         })
+        this.playLaneSFX()
+        archetypes.Stage.spawn({})
         for (const archetype of Object.values(archetypes)) {
             if (!('globalPreprocess' in archetype)) continue
             archetype.globalPreprocess()
         }
+        merge.searching(this.cache, this.customCombo, this.ap)
+    }
+    playLaneSFX() {
+        if (options.sfxEnabled && replay.isReplay) {
+            for (let l = -6; l < 6; l++) {
+                let key = -999999
+                while (true) {
+                    const newKey = streams.getNextKey(l, key)
+                    if (key == newKey) break
+                    effect.clips.stage.schedule(newKey, sfxDistance)
+                    key = newKey
+                }
+            }
+        }
+    }
+    ap = this.entityMemory(Boolean)
+    cache = this.entityMemory(Tuple(32, Number))
+    get customCombo() {
+        return archetypes.NormalTapNote.customCombo
     }
 }

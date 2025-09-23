@@ -38,30 +38,56 @@ export class ComboNumber extends SpawnableArchetype({
         const firstDigitIndex = digits.findIndex((digit) => digit !== 0)
         const digitCount = firstDigitIndex === -1 ? 1 : digits.length - firstDigitIndex
         const h = 0.1222 * ui.configuration.combo.scale
+        const h2 = 0.15886 * ui.configuration.combo.scale
         const digitWidth = h * 0.79 * 7
+        const digitWidth2 = h2 * 0.79 * 7
         const centerX = 5.337
         const centerY = 0.585
         // 애니메이션 = s * (원래좌표) + (1 - s) * centerX, s * (원래좌표) + (1 - s) * centerY
         const s =
             0.6 +
             0.4 * Math.unlerpClamped(this.spawnData.time, this.spawnData.time + 0.112, time.now)
+        const s2 =
+            0.769 +
+            0.231 *
+                Math.unlerpClamped(
+                    this.spawnData.time + 0.112,
+                    this.spawnData.time + 0.192,
+                    time.now,
+                )
         const a = ui.configuration.combo.alpha
+        const a2 =
+            time.now >= this.spawnData.time + 0.112
+                ? ui.configuration.combo.alpha *
+                  Math.unlerp(this.spawnData.time + 0.192, this.spawnData.time + 0.112, time.now)
+                : 0
+        const a3 = ui.configuration.combo.alpha * 0.8 * ((Math.cos(time.now * Math.PI) + 1) / 2)
         const digitGap = digitWidth * options.comboDistance
+        const digitGap2 = digitWidth2 * options.comboDistance
         const totalWidth = digitCount * digitWidth + (digitCount - 1) * digitGap
+        const totalWidth2 = digitCount * digitWidth2 + (digitCount - 1) * digitGap2
         const startX = centerX - totalWidth / 2
+        const startX2 = centerX - totalWidth2 / 2
         comboNumberLayout.numberLayout(
             this.ap,
             this.z,
             digits,
             digitCount,
             digitWidth,
+            digitWidth2,
             digitGap,
+            digitGap2,
             s,
+            s2,
             a,
+            a2,
+            a3,
             h,
+            h2,
             centerX,
             centerY,
             startX,
+            startX2,
         )
     }
     updateSequential() {

@@ -125,14 +125,6 @@ export class Note extends Archetype {
                 time: time.now,
                 judgment: this.result.judgment,
             })
-            archetypes.ComboNumberEffect.spawn({
-                time: time.now,
-                judgment: this.result.judgment,
-            })
-            archetypes.ComboNumberGlow.spawn({
-                time: time.now,
-                judgment: this.result.judgment,
-            })
             archetypes.ComboLabel.spawn({
                 time: time.now,
                 judgment: this.result.judgment,

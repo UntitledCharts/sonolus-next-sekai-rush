@@ -25,6 +25,8 @@ export const particle = defineParticle({
         normalTraceNoteLinear: 'Sekai Trace Note Linear Green',
         criticalTraceNoteCircular: 'Sekai Trace Note Circular Yellow',
         criticalTraceNoteLinear: 'Sekai Trace Note Linear Yellow',
+        damageNoteCircular: 'Sekai Damage Note Circular Purple',
+        damageNoteLinear: 'Sekai Damage Note Linear Purple',
         normalSlideTickNote: ParticleEffectName.NoteCircularAlternativeGreen,
         criticalSlideTickNote: ParticleEffectName.NoteCircularAlternativeYellow,
         normalSlideConnectorCircular: ParticleEffectName.NoteCircularHoldGreen,
@@ -76,6 +78,20 @@ export const linearEffectLayout = ({ lane, shear }) => {
         y3: t,
         y4: b,
     }
+}
+export const linearEffectQuad = ({ lane, shear }) => {
+    const w = options.noteEffectSize
+    const h = options.noteEffectSize * scaledScreen.wToH
+    const p = 1 + 0.125 * options.noteEffectSize
+    const b = 1
+    const t = 1 - 2 * h
+    shear *= options.noteEffectSize
+    return new Quad({
+        p1: { x: lane - w, y: b },
+        p2: { x: lane * p - w + shear, y: t },
+        p3: { x: lane * p + w + shear, y: t },
+        p4: { x: lane + w, y: b },
+    })
 }
 export const flatEffectLayout = ({ lane }) => {
     const w = 4 * options.noteEffectSize

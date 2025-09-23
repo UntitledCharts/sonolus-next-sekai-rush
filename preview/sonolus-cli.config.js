@@ -5,7 +5,8 @@ export default {
         return {
             ...options,
             treeShaking: true,
-            minifyWhitespace: true,
+            //minifyWhitespace: true,
         }
     },
+    //workerCount: 6,
 }

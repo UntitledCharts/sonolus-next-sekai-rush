@@ -14,10 +14,10 @@ export class SlotGlowEffect extends SpawnableArchetype({
     })
     z = this.entityMemory(Number)
     spawnTime() {
-        return timeScaleChanges.at(this.spawnData.startTime).scaledTime
+        return this.spawnData.startTime
     }
     despawnTime() {
-        return timeScaleChanges.at(this.spawnData.startTime + 0.5).scaledTime
+        return this.spawnData.startTime + 0.5
     }
     initialize() {
         this.endTime = this.spawnData.startTime + 0.25
@@ -27,11 +27,7 @@ export class SlotGlowEffect extends SpawnableArchetype({
         this.layout.r.min = this.spawnData.lane + this.spawnData.size
         this.layout.r.max = this.layout.r.min * s
         this.layout.h = 4.25 * options.slotEffectSize * scaledScreen.wToH
-        this.z = getZ(
-            layer.slotGlowEffect,
-            -this.spawnData.startTime,
-            -Math.abs(this.spawnData.lane),
-        )
+        this.z = getZ(layer.slotGlowEffect, -this.spawnData.startTime, this.spawnData.lane, 0)
     }
     updateParallel() {
         if (time.now < this.spawnData.startTime) return

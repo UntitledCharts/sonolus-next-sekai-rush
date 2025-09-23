@@ -20,31 +20,33 @@ export const merge = {
                 archetypeIndex == archetypes.CriticalTraceNote.index ||
                 archetypeIndex == archetypes.NormalTraceFlickNote.index ||
                 archetypeIndex == archetypes.CriticalTraceFlickNote.index ||
-                archetypeIndex == archetypes.NormalSlideTraceNote.index ||
-                archetypeIndex == archetypes.CriticalSlideTraceNote.index ||
-                archetypeIndex == archetypes.NormalSlideStartNote.index ||
-                archetypeIndex == archetypes.CriticalSlideStartNote.index ||
-                archetypeIndex == archetypes.NormalSlideEndNote.index ||
-                archetypeIndex == archetypes.CriticalSlideEndNote.index ||
-                archetypeIndex == archetypes.NormalSlideEndTraceNote.index ||
-                archetypeIndex == archetypes.CriticalSlideEndTraceNote.index ||
-                archetypeIndex == archetypes.CriticalSlideEndFlickNote.index ||
-                archetypeIndex == archetypes.NormalSlideEndFlickNote.index ||
-                archetypeIndex == archetypes.NormalSlideTickNote.index ||
-                archetypeIndex == archetypes.CriticalSlideTickNote.index ||
-                archetypeIndex == archetypes.HiddenSlideTickNote.index ||
-                archetypeIndex == archetypes.NormalAttachedSlideTickNote.index ||
-                archetypeIndex == archetypes.CriticalAttachedSlideTickNote.index
+                archetypeIndex == archetypes.NormalHeadTapNote.index ||
+                archetypeIndex == archetypes.CriticalHeadTapNote.index ||
+                archetypeIndex == archetypes.NormalHeadTraceNote.index ||
+                archetypeIndex == archetypes.CriticalHeadTraceNote.index ||
+                archetypeIndex == archetypes.NormalHeadTraceFlickNote.index ||
+                archetypeIndex == archetypes.CriticalHeadTraceFlickNote.index ||
+                archetypeIndex == archetypes.NormalTailFlickNote.index ||
+                archetypeIndex == archetypes.CriticalTailFlickNote.index ||
+                archetypeIndex == archetypes.NormalTailTraceNote.index ||
+                archetypeIndex == archetypes.CriticalTailTraceNote.index ||
+                archetypeIndex == archetypes.NormalTailTraceFlickNote.index ||
+                archetypeIndex == archetypes.CriticalTailTraceFlickNote.index ||
+                archetypeIndex == archetypes.NormalTailReleaseNote.index ||
+                archetypeIndex == archetypes.CriticalTailReleaseNote.index ||
+                archetypeIndex == archetypes.NormalTickNote.index ||
+                archetypeIndex == archetypes.CriticalTickNote.index ||
+                archetypeIndex == archetypes.TransientHiddenTickNote.index
             ) {
                 lineLength += 1
-                customCombo.get(ii).value.set(0, next)
+                customCombo.get(ii).value = next
                 next = ii
             }
         }
         let currentEntity = next
         for (let i = 0; i < lineLength; i++) {
             let currentHead = currentEntity
-            currentEntity = customCombo.get(currentEntity).value.get(0)
+            currentEntity = customCombo.get(currentEntity).value
             for (let j = 0; j < 32; j++) {
                 if (cache.get(j) == 0) {
                     cache.set(j, currentHead)
@@ -78,7 +80,7 @@ export const merge = {
         let idx = 0
         let ptr = head
         let combo = 0
-        while (idx < lineLength && ptr != customCombo.get(customCombo.get(0).tail).value.get(0)) {
+        while (idx < lineLength && ptr != customCombo.get(customCombo.get(0).tail).value) {
             if ((replay.isReplay && customCombo.get(ptr).ap == true) || ap == true) {
                 ap = true
                 customCombo.get(ptr).ap = true
@@ -91,10 +93,9 @@ export const merge = {
                 combo = 0
             else combo += 1
             customCombo.get(ptr).combo = combo
-            ptr = customCombo.get(ptr).value.get(0)
+            ptr = customCombo.get(ptr).value
             idx++
         }
-        this.skipList(customCombo)
     },
     merge(customCombo, a, b, Asize, Bsize) {
         let Alen = 0
@@ -105,60 +106,24 @@ export const merge = {
         let pointer = newHead
         if (customCombo.get(A).time > customCombo.get(B).time) {
             Blen += 1
-            B = customCombo.get(B).value.get(0)
+            B = customCombo.get(B).value
         } else {
             Alen += 1
-            A = customCombo.get(A).value.get(0)
+            A = customCombo.get(A).value
         }
         while (Alen < Asize && Blen < Bsize) {
             if (customCombo.get(A).time > customCombo.get(B).time) {
-                customCombo.get(pointer).value.set(0, B)
+                customCombo.get(pointer).value = B
                 pointer = B
-                B = customCombo.get(B).value.get(0)
+                B = customCombo.get(B).value
                 Blen += 1
             } else {
-                customCombo.get(pointer).value.set(0, A)
+                customCombo.get(pointer).value = A
                 pointer = A
-                A = customCombo.get(A).value.get(0)
+                A = customCombo.get(A).value
                 Alen += 1
             }
         }
-        if (Alen < Asize) {
-            customCombo.get(pointer).value.set(0, A)
-            // 마지막 노드 찾기
-            while (Alen < Asize) {
-                pointer = A
-                A = customCombo.get(A).value.get(0)
-                Alen += 1
-            }
-        }
-        if (Blen < Bsize) {
-            customCombo.get(pointer).value.set(0, B)
-            // 마지막 노드 찾기
-            while (Blen < Bsize) {
-                pointer = B
-                B = customCombo.get(B).value.get(0)
-                Blen += 1
-            }
-        }
-        customCombo.get(pointer).value.set(0, -1)
-        customCombo.get(0).tail = pointer
         return newHead
-    },
-    skipList(customCombo) {
-        const head = customCombo.get(0).start
-        const tail = customCombo.get(0).tail
-        for (let level = 1; level < 4; level++) {
-            let currentNode = customCombo.get(head).value.get(level - 1)
-            let lastNode = head
-            while (currentNode && currentNode !== tail) {
-                if (Math.random() < 0.5) {
-                    customCombo.get(lastNode).value.set(level, currentNode)
-                    lastNode = currentNode
-                }
-                currentNode = customCombo.get(currentNode).value.get(level - 1)
-            }
-            customCombo.get(lastNode).value.set(level, tail)
-        }
     },
 }

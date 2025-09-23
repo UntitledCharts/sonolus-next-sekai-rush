@@ -11,7 +11,7 @@ import { note } from '../../note.js'
 import { scaledScreen } from '../../scaledScreen.js'
 import { getZ, layer, skin } from '../../skin.js'
 import { disallowEmpty } from '../InputManager.js'
-import { timeToScaledTime, progress } from '../utils.js'
+import { progress } from '../utils.js'
 import { QuadLayout } from '../../../../../../shared/src/engine/data/utils.js'
 import { getAttached } from '../notes/slideTickNotes/utils.js'
 export var VisualType
@@ -201,7 +201,7 @@ export class Guide extends Archetype {
             if (this.segmentHeadMemory.segmentKind < 100) disallowEmpty(touch)
             this.activeHeadMemory.lastActiveTime = time.now
         }
-        if (this.segmentHeadMemory.segmentKind < 100) {
+        if (this.import.activeHeadRef > 0) {
             if (this.activeHeadMemory.lastActiveTime === time.now) {
                 if (this.activeHeadMemory.exportStartTime !== -1000) return
                 streams.set(this.import.activeHeadRef, time.now, 999999)
@@ -227,7 +227,7 @@ export class Guide extends Archetype {
             this.renderConnector()
         }
     }
-    useFallbackSprite() {
+    get useFallbackSprite() {
         if (
             this.segmentHeadMemory.segmentKind == kind.ActiveNormal ||
             this.segmentHeadMemory.segmentKind == kind.ActiveFakeNormal
@@ -252,9 +252,7 @@ export class Guide extends Archetype {
             return !this.sprites.guide.neutral.exists
         } else if (this.segmentHeadMemory.segmentKind == kind.GuidePurple) {
             return !this.sprites.guide.purple.exists
-        } else if (this.segmentHeadMemory.segmentKind == kind.GuideRed) {
-            return !this.sprites.guide.red.exists
-        }
+        } else return !this.sprites.guide.red.exists
     }
     get critical() {
         if (this.segmentHeadMemory.segmentKind > 100) return 0
@@ -275,7 +273,6 @@ export class Guide extends Archetype {
                         input.offset
                   ? VisualType.NotActivated
                   : VisualType.Waiting
-        debug.log(this.visual)
     }
     renderConnector() {
         if (time.now >= this.tailMemory.targetTime) return
@@ -459,7 +456,7 @@ export class Guide extends Archetype {
             lastSize = nextSize
             lastAlpha = nextAlpha
             lastTargetTime = nextTargetTime
-            if (this.useFallbackSprite()) {
+            if (this.useFallbackSprite) {
                 this.sprites.normal.fallback.draw(layout, this.z, a)
                 return
             }
@@ -477,16 +474,6 @@ export class Guide extends Archetype {
             this.tailMemory.targetTime,
             targetTime,
         )
-    }
-    getScale(scaledTime) {
-        if (time.now > this.activeHeadMemory.targetTime)
-            return this.ease(
-                Math.unlerpClamped(this.head.scaledTime, this.tail.scaledTime, scaledTime),
-            )
-        else
-            return this.ease(
-                Math.unlerpClamped(this.headMemory.targetTime, this.tail.scaledTime, scaledTime),
-            )
     }
     ease(s) {
         return ease(this.headMemory.connectorEase, s)
@@ -531,8 +518,6 @@ export class Guide extends Archetype {
             this.sprites.guide.neutral.draw(layout, this.z, a)
         } else if (this.segmentHeadMemory.segmentKind == kind.GuidePurple) {
             this.sprites.guide.purple.draw(layout, this.z, a)
-        } else if (this.segmentHeadMemory.segmentKind == kind.GuideRed) {
-            this.sprites.guide.red.draw(layout, this.z, a)
-        }
+        } else this.sprites.guide.red.draw(layout, this.z, a)
     }
 }

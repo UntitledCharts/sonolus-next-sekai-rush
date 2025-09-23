@@ -14,10 +14,10 @@ export class LaneEffectSpawner extends SpawnableArchetype({
     laneEffectLane = levelMemory({ l: Tuple(12, Number), r: Tuple(12, Number) })
     check = this.entityMemory(Boolean)
     spawnTime() {
-        return timeScaleChanges.at(this.spawnData.t).scaledTime
+        return this.spawnData.t
     }
     despawnTime() {
-        return timeScaleChanges.at(this.spawnData.t + 1).scaledTime
+        return this.spawnData.t + 1
     }
     terminate() {
         this.check = false

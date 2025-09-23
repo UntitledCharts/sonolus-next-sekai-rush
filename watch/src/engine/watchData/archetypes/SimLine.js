@@ -1,38 +1,47 @@
-import { approach } from '../../../../../shared/src/engine/data/note.js'
-import { perspectiveLayout } from '../../../../../shared/src/engine/data/utils.js'
+import {
+    approach,
+    approach2,
+    progressCutoff,
+    progressStart,
+} from '../../../../../shared/src/engine/data/note.js'
+import { QuadLayout } from '../../../../../shared/src/engine/data/utils.js'
 import { options } from '../../configuration/options.js'
 import { note } from '../note.js'
 import { getZ, layer, skin } from '../skin.js'
 import { archetypes } from './index.js'
+import { progress } from './utils.js'
 export class SimLine extends Archetype {
     import = this.defineImport({
-        aRef: { name: 'a', type: Number },
-        bRef: { name: 'b', type: Number },
+        leftRef: { name: 'left', type: Number },
+        rightRef: { name: 'right', type: Number },
+    })
+    left = this.entityMemory({
+        min: Number,
+        max: Number,
+        lane: Number,
+        timeScaleGroup: Number,
+    })
+    right = this.entityMemory({
+        min: Number,
+        max: Number,
+        lane: Number,
+        timeScaleGroup: Number,
     })
     targetTime = this.entityMemory(Number)
-    visualTime = this.entityMemory(Range)
+    visualSpawnTime = this.entityMemory(Number)
     hiddenTime = this.entityMemory(Number)
     initialized = this.entityMemory(Boolean)
     spriteLayout = this.entityMemory(Quad)
     z = this.entityMemory(Number)
     preprocess() {
         if (!options.simLineEnabled) return
-        this.targetTime = bpmChanges.at(this.aImport.beat).time
-        this.visualTime.copyFrom(
-            Range.l.mul(note.duration).add(timeScaleChanges.at(this.targetTime).scaledTime),
-        )
+        this.visualSpawnTime = Math.max(this.leftMemory.spawnTime, this.rightMemory.spawnTime)
     }
     spawnTime() {
-        return this.visualTime.min
+        return this.visualSpawnTime
     }
     despawnTime() {
-        return replay.isReplay
-            ? Math.min(
-                  this.visualTime.max,
-                  this.aSharedMemory.despawnTime,
-                  this.bSharedMemory.despawnTime,
-              )
-            : this.visualTime.max
+        return Math.min(this.leftMemory.hitTime, this.rightMemory.hitTime)
     }
     initialize() {
         if (this.initialized) return
@@ -40,34 +49,78 @@ export class SimLine extends Archetype {
         this.globalInitialize()
     }
     updateParallel() {
-        if (options.hidden > 0 && time.scaled > this.hiddenTime) return
         this.render()
     }
-    get aImport() {
-        return archetypes.NormalTapNote.import.get(this.import.aRef)
+    get leftImport() {
+        return archetypes.NormalTapNote.import.get(this.import.leftRef)
     }
-    get aSharedMemory() {
-        return archetypes.NormalTapNote.sharedMemory.get(this.import.aRef)
+    get leftInfo() {
+        return entityInfos.get(this.import.leftRef)
     }
-    get bImport() {
-        return archetypes.NormalTapNote.import.get(this.import.bRef)
+    get leftMemory() {
+        return archetypes.NormalTapNote.sharedMemory.get(this.import.leftRef)
     }
-    get bSharedMemory() {
-        return archetypes.NormalTapNote.sharedMemory.get(this.import.bRef)
+    get rightImport() {
+        return archetypes.NormalTapNote.import.get(this.import.rightRef)
+    }
+    get rightInfo() {
+        return entityInfos.get(this.import.rightRef)
+    }
+    get rightMemory() {
+        return archetypes.NormalTapNote.sharedMemory.get(this.import.rightRef)
     }
     globalInitialize() {
-        if (options.hidden > 0)
-            this.hiddenTime = this.visualTime.max - note.duration * options.hidden
-        let l = this.aImport.lane
-        let r = this.bImport.lane
-        if (l > r) [l, r] = [r, l]
-        const b = 1 + note.h
-        const t = 1 - note.h
-        perspectiveLayout({ l, r, b, t }).copyTo(this.spriteLayout)
-        this.z = getZ(layer.simLine, this.targetTime, l)
+        this.z = getZ(
+            layer.simLine,
+            (this.leftMemory.targetTime - this.rightMemory.targetTime) / 2,
+            (this.leftImport.lane + this.rightImport.lane) / 2,
+            0,
+        )
     }
     render() {
-        const y = approach(this.visualTime.min, this.visualTime.max, time.scaled)
-        skin.sprites.simLine.draw(this.spriteLayout.mul(y), this.z, 1)
+        const leftProgress = progress(
+            this.leftImport.isAttached,
+            this.leftImport.attachHead,
+            this.leftImport.attachTail,
+            this.leftMemory.targetTime,
+            this.leftMemory.targetScaledTime,
+            this.leftImport.timeScaleGroup,
+        )
+        const rightProgress = progress(
+            this.rightImport.isAttached,
+            this.rightImport.attachHead,
+            this.rightImport.attachTail,
+            this.rightMemory.targetTime,
+            this.rightMemory.targetScaledTime,
+            this.rightImport.timeScaleGroup,
+        )
+        if (leftProgress < progressStart && rightProgress < progressStart) return
+        if (leftProgress > progressCutoff && rightProgress > progressCutoff) return
+        const adjLeftProgress = Math.clamp(leftProgress, progressStart, progressCutoff)
+        const adjRightProgress = Math.clamp(rightProgress, progressStart, progressCutoff)
+        let adjLeftLane = this.leftImport.lane
+        let adjRightLane = this.rightImport.lane
+        if (Math.abs(leftProgress - rightProgress) > 1e-6) {
+            const adjLeftFrac = Math.unlerp(leftProgress, rightProgress, adjLeftProgress)
+            const adjRightFrac = Math.unlerp(leftProgress, rightProgress, adjRightProgress)
+            adjLeftLane = Math.lerp(this.leftImport.lane, this.rightImport.lane, adjLeftFrac)
+            adjRightLane = Math.lerp(this.leftImport.lane, this.rightImport.lane, adjRightFrac)
+        }
+        let adjLeftTravel = approach2(adjLeftProgress)
+        let adjRightTravel = approach2(adjRightProgress)
+        if (adjLeftLane > adjRightLane) {
+            ;[adjLeftLane, adjRightLane] = [adjRightLane, adjLeftLane]
+            ;[adjLeftTravel, adjRightTravel] = [adjRightTravel, adjLeftTravel]
+        }
+        const ml = new Vec(adjLeftLane * 1 * adjLeftTravel, 1 * adjLeftTravel)
+        const mr = new Vec(adjRightLane * 1 * adjRightTravel, 1 * adjRightTravel)
+        const ort = mr.sub(ml).rotate(90).normalize()
+        const layout = QuadLayout({
+            bl: ml.add(ort.mul(note.h * adjLeftTravel)),
+            br: mr.add(ort.mul(note.h * adjRightTravel)),
+            tl: ml.sub(ort.mul(note.h * adjLeftTravel)),
+            tr: mr.sub(ort.mul(note.h * adjRightTravel)),
+        })
+        skin.sprites.simLine.draw(layout, this.z, 1)
     }
 }
